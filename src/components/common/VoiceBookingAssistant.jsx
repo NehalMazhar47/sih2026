@@ -1,128 +1,238 @@
 import React, { useState } from 'react';
+import { Mic, MicOff, Volume2, Sparkles, X, CheckCircle2, ArrowRight } from 'lucide-react';
 import { usePlatform } from '../../context/PlatformContext';
-import { Mic, X, Volume2, ArrowRight } from 'lucide-react';
 
-const PROMPTS = [
-  { text: 'Mujhe kal subah ek plumber chahiye', lang: 'Hindi', intent: { label_en: 'Plumber – Scheduled', label_hi: 'प्लंबर – निर्धारित सेवा', category: 'plumber', isEmergency: false } },
-  { text: 'मेरी बिजली चली गई, कोई भेजो अभी', lang: 'हिन्दी', intent: { label_en: 'Electrician – Emergency', label_hi: 'इलेक्ट्रीशियन – आपातकाल', category: 'electrician', isEmergency: true } },
-  { text: 'Need a carpenter for furniture repair', lang: 'English', intent: { label_en: 'Carpenter – Scheduled', label_hi: 'बढ़ई – निर्धारित', category: 'carpenter', isEmergency: false } },
-  { text: 'Ghar ki safai karwani hai deepawali se pehle', lang: 'Hinglish', intent: { label_en: 'Deep Cleaning – Scheduled', label_hi: 'गहन सफाई – निर्धारित', category: 'cleaning', isEmergency: false } },
-];
-
-export const VoiceBookingAssistant = ({ isOpen, onClose }) => {
-  const { language, setRole } = usePlatform();
-  const isHi = language === 'hi';
-  const [listening, setListening] = useState(false);
-  const [detectedIntent, setDetectedIntent] = useState(null);
-
+export const VoiceBookingAssistant = ({ isOpen, onClose, onSelectService }) => {
   if (!isOpen) return null;
 
-  const handleSimulate = (p) => {
-    setListening(true);
-    setTimeout(() => { setListening(false); setDetectedIntent(p.intent); }, 1200);
+  const { speakText, showToast, language } = usePlatform();
+  const isHi = language === 'hi';
+
+  const [isListening, setIsListening] = useState(false);
+  const [transcribedText, setTranscribedText] = useState("");
+  const [detectedIntent, setDetectedIntent] = useState(null);
+
+  const samplePrompts = [
+    {
+      text: "बिजली का शॉर्ट सर्किट हो गया है, तुरंत इलेक्ट्रीशियन भेजो",
+      lang: "हिन्दी (Hindi - North)",
+      category: "electrician",
+      isEmergency: true,
+      label: isHi ? "विद्युत शॉर्ट सर्किट (आपातकालीन SOS)" : "Electrical Short Circuit (Emergency SOS)"
+    },
+    {
+      text: "ઘરમાં શોર્ટ સર્કિટ થઈ ગયું છે, તાત્કાલિક ઇલેક્ટ્રિશિયન મોકલો",
+      lang: "ગુજરાતી (Gujarati - West)",
+      category: "electrician",
+      isEmergency: true,
+      label: isHi ? "विद्युत शॉर्ट सर्किट (आपातकालीन SOS)" : "Electrical Short Circuit (Emergency SOS)"
+    },
+    {
+      text: "घरामध्ये सणापूर्वी पेंटिंग आणि डीप क्लिनिंग करायचे आहे",
+      lang: "मराठी (Marathi - West)",
+      category: "painter",
+      isEmergency: false,
+      label: isHi ? "त्योहार पूर्व पेंटिंग एवं डीप क्लीनिंग" : "Festival Painting & Deep Cleaning"
+    },
+    {
+      text: "வீட்டில் தண்ணீர் குழாய் உடைந்துவிட்டது, உடனடியாக பிளम्बर வேண்டும்",
+      lang: "தமிழ் (Tamil - South)",
+      category: "plumber",
+      isEmergency: true,
+      label: isHi ? "पाइपलाइन लीकेज आपातकाल (प्लंबर SOS)" : "Pipeline Burst Emergency (Plumber SOS)"
+    },
+    {
+      text: "మా ఇంట్లో కరెంట్ పోయింది, అర్జెంటుగా ఎలక్ట్రీషియన్ కావాలి",
+      lang: "తెలుగు (Telugu - South)",
+      category: "electrician",
+      isEmergency: true,
+      label: isHi ? "विद्युत खराबी एवं ट्रिपिंग मरम्मत" : "Power Outage & Tripping Fix"
+    },
+    {
+      text: "ಮನೆಯಲ್ಲಿ ನೀರಿನ ಪೈಪ್ ಲೀಕ್ ಆಗಿದೆ, ತುರ್ತು ಪ್ಲಂಬರ್ ಬೇಕು",
+      lang: "ಕನ್ನಡ (Kannada - South)",
+      category: "plumber",
+      isEmergency: true,
+      label: isHi ? "पानी का रिसाव एवं पाइपलाइन मरम्मत" : "Water Seepage & Leakage Repair"
+    },
+    {
+      text: "മുതിർന്ന രോഗിയുടെ പരിചരണത്തിനായി വിദഗ്ദ്ധയായ സഹായികയെ വേണം",
+      lang: "മലയാളം (Malayalam - South)",
+      category: "caregiver",
+      isEmergency: false,
+      label: isHi ? "वरिष्ठ नागरिक देखभालकर्ता" : "Geriatric Bedside Caregiver"
+    },
+    {
+      text: "ਘਰ ਵਿੱਚ ਪਾਣੀ ਦਾ ਪਾਈਪ ਲੀਕ ਕਰ ਰਿਹਾ ਹੈ, ਤੁਰੰਤ ਪਲੰਬਰ ਭੇਜੋ",
+      lang: "ਪੰਜਾਬੀ (Punjabi - North)",
+      category: "plumber",
+      isEmergency: true,
+      label: isHi ? "आपातकालीन प्लंबिंग SOS" : "Emergency Plumbing SOS"
+    },
+    {
+      text: "পূজার আগে ঘরের দেওয়াল রঙ ও গভীর পরিষ্কার করাতে হবে",
+      lang: "বাংলা (Bengali - East)",
+      category: "painter",
+      isEmergency: false,
+      label: isHi ? "त्योहार हेतु दीवार रंगाई व सफाई" : "Festive Wall Painting & Housekeeping"
+    },
+    {
+      text: "ଘରେ ବିଦ୍ୟୁତ୍ ତାର ପୋଡ଼ି ଯାଇଛି, ତୁରନ୍ତ ଇଲେକ୍ଟ୍ରିସିଆନ୍ ପଠାନ୍ତୁ",
+      lang: "ଓଡ଼ିଆ (Odia - East)",
+      category: "electrician",
+      isEmergency: true,
+      label: isHi ? "इलेक्ट्रिकल इमरजेंसी ब्रेकडाउन" : "Electrical Emergency Breakdown"
+    },
+    {
+      text: "Need a certified technician for solar inverter battery diagnostics",
+      lang: "English (National)",
+      category: "technician",
+      isEmergency: false,
+      label: isHi ? "सोलर पीवी इन्वर्टर निरीक्षण" : "Solar PV Inverter Inspection"
+    }
+  ];
+
+  const handleSimulateVoice = (sample) => {
+    setIsListening(true);
+    setTranscribedText(sample.text);
+    speakText(sample.text);
+
+    setTimeout(() => {
+      setIsListening(false);
+      setDetectedIntent(sample);
+    }, 1200);
   };
 
-  const handleConfirm = () => {
-    onClose();
-    window.dispatchEvent(new CustomEvent('open-booking', { detail: detectedIntent }));
+  const handleConfirmIntent = () => {
+    if (detectedIntent) {
+      onSelectService(detectedIntent.category, detectedIntent.isEmergency);
+      onClose();
+    }
   };
 
   return (
-    <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal-box">
-        <div className="modal-header">
-          <div>
-            <div className="modal-title">
-              <Mic size={18} style={{ display: 'inline', marginRight: 6, color: 'var(--saffron)' }} />
-              {isHi ? 'आवाज बुकिंग सहायक' : 'Voice Booking Assistant'}
+    <div className="modal-backdrop">
+      <div className="modal-content" style={{ maxWidth: '600px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ width: '38px', height: '38px', background: 'rgba(244,140,6,0.2)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Mic size={22} color="var(--saffron)" />
             </div>
-            <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
-              {isHi ? 'बोलें या नीचे से चुनें' : 'Speak or tap a sample below'}
+            <div>
+              <h3 style={{ fontSize: '18px', color: '#ffffff' }}>
+                {isHi ? "बहुभाषी वॉइस एआई बुकिंग सहायक" : "Multilingual Voice AI Booking Assistant"}
+              </h3>
+              <div style={{ fontSize: '11px', color: '#34d399' }}>
+                {isHi ? "वरिष्ठ नागरिकों एवं बोलकर सेवा बुक करने हेतु" : "Designed for Illiterate Citizens & Senior Citizens"}
+              </div>
             </div>
           </div>
-          <button className="btn btn-ghost btn-icon btn-sm" onClick={onClose}><X size={18} /></button>
+          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>✕</button>
         </div>
 
-        <div className="modal-body" style={{ padding: 'var(--sp-lg) var(--sp-xl)' }}>
-          {/* Mic button */}
-          <div style={{ textAlign: 'center', marginBottom: 'var(--sp-lg)' }}>
-            <button
-              onClick={() => { setListening(true); setTimeout(() => setListening(false), 3000); }}
-              style={{
-                width: 80, height: 80, borderRadius: '50%',
-                background: listening ? 'var(--sos)' : 'var(--navy)',
-                border: listening ? '3px solid rgba(220,38,38,0.3)' : '3px solid rgba(15,41,66,0.2)',
-                color: 'white',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                cursor: 'pointer', margin: '0 auto',
-                boxShadow: listening ? '0 0 0 12px rgba(220,38,38,0.1)' : 'var(--shadow-md)',
-                transition: 'all 0.3s ease'
-              }}
-            >
-              <Mic size={32} />
-            </button>
-            <div style={{ marginTop: 12, fontSize: 14, color: 'var(--text-muted)', fontWeight: 600 }}>
-              {listening
-                ? (isHi ? '🔴 सुन रहा हूं...' : '🔴 Listening...')
-                : (isHi ? 'बोलने के लिए दबाएं' : 'Tap to speak')}
-            </div>
+        <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '16px' }}>
+          {isHi ? "अपनी मातृभाषा में बोलें। सहकारी नैचुरल लैंग्वेज प्रोसेसिंग (NLP) तुरंत कार्य की पहचान कर निकटतम प्रमाणित कारीगर को जोड़ेगा।" : "Speak in your native dialect (Hindi, Marathi, Tamil, Bengali, English). The Cooperative Natural Language Processing (NLP) engine extracts trade requirements and dispatches verified artisans without typing."}
+        </p>
+
+        {/* Voice Listening Animation Box */}
+        <div
+          style={{
+            background: '#071326',
+            border: isListening ? '2px solid #ef4444' : '1px solid var(--primary-border)',
+            borderRadius: '16px',
+            padding: '24px',
+            textAlign: 'center',
+            marginBottom: '20px',
+            boxShadow: isListening ? '0 0 25px rgba(239,68,68,0.4)' : 'none'
+          }}
+        >
+          <div
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              background: isListening ? '#ef4444' : 'rgba(244,140,6,0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 12px',
+              animation: isListening ? 'pulseSOS 1.5s infinite' : 'none'
+            }}
+          >
+            <Mic size={30} color={isListening ? "#ffffff" : "#f48c06"} />
           </div>
 
-          {/* Detected intent */}
-          {detectedIntent && (
-            <div style={{ background: 'var(--green-pale)', border: '2px solid #A7DFC4', borderRadius: 'var(--r-lg)', padding: 'var(--sp-md)', marginBottom: 'var(--sp-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--green)', marginBottom: 4 }}>
-                  {isHi ? 'AI ने पहचाना:' : 'AI Detected Intent:'}
-                </div>
-                <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--navy)' }}>{isHi ? detectedIntent.label_hi : detectedIntent.label_en}</div>
-                {detectedIntent.isEmergency && <span className="badge badge-red mt-sm">🚨 {isHi ? 'आपातकाल' : 'Emergency'}</span>}
-              </div>
-              <button className="btn btn-green btn-sm" onClick={handleConfirm}>
-                {isHi ? 'बुकिंग करें' : 'Proceed'} <ArrowRight size={14} />
-              </button>
+          <div style={{ fontSize: '14px', fontWeight: 600, color: '#ffffff' }}>
+            {isListening ? (isHi ? "सुन रहा है और ध्वनि विश्लेषण जारी है..." : "Listening & Parsing Voice Audio...") : (transcribedText || (isHi ? "नीचे दिए गए किसी भी वाक्य पर टैप करें अथवा माइक में बोलें" : "Tap a sample voice command below or speak into microphone"))}
+          </div>
+          {isListening && (
+            <div style={{ fontSize: '11px', color: '#fca5a5', marginTop: '4px' }}>
+              {isHi ? "● वेब स्पीच एपीआई द्वारा वाणी से पाठ में रूपांतरण" : "● Converting speech to text via Web Speech API"}
             </div>
           )}
+        </div>
 
-          {/* Sample prompts */}
-          <div>
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>
-              {isHi ? 'उदाहरण वाक्य (क्लिक करें):' : 'Sample voice prompts (click to try):'}
+        {/* Detected Intent Card */}
+        {detectedIntent && (
+          <div style={{ background: 'rgba(16,185,129,0.1)', border: '1.5px solid #10b981', borderRadius: '12px', padding: '14px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <div style={{ fontSize: '11px', color: '#34d399', fontWeight: 700 }}>
+                {isHi ? "AI द्वारा पहचानी गई सेवा:" : "AI Intent Extraction Result:"}
+              </div>
+              <div style={{ fontSize: '15px', fontWeight: 700, color: '#ffffff' }}>{detectedIntent.label}</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                {isHi ? "प्राथमिकता: " : "Priority: "}
+                {detectedIntent.isEmergency ? (isHi ? '🚨 तत्काल आपातकालीन SOS' : '🚨 Immediate Emergency SOS') : (isHi ? '📅 निर्धारित मानक सेवा' : '📅 Scheduled Standard Service')}
+              </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {PROMPTS.map((p, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleSimulate(p)}
-                  style={{
-                    background: 'var(--bg)',
-                    border: '1.5px solid var(--border)',
-                    borderRadius: 'var(--r-md)',
-                    padding: '10px var(--sp-md)',
-                    textAlign: 'left',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    gap: 10,
-                    fontSize: 14,
-                    color: 'var(--text)',
-                    transition: 'all 0.15s ease'
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--navy)'}
-                  onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <Volume2 size={14} color="var(--saffron)" />
-                    <span>"{p.text}"</span>
-                  </div>
-                  <span className="badge badge-gray" style={{ fontSize: 10 }}>{p.lang}</span>
-                </button>
-              ))}
-            </div>
+            <button onClick={handleConfirmIntent} className="btn-emerald" style={{ padding: '8px 18px', fontSize: '12px' }}>
+              {isHi ? "कारीगर भेजें " : "Proceed to Dispatch "} <ArrowRight size={14} />
+            </button>
           </div>
+        )}
+
+        {/* Sample Voice Prompts Grid */}
+        <div style={{ marginBottom: '14px' }}>
+          <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
+            {isHi ? "प्राकृतिक भाषा के उदाहरण (क्लिक करके जांचें):" : "Click to Simulate Natural Speech Prompts:"}
+          </span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {samplePrompts.map((p, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleSimulateVoice(p)}
+                style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '10px',
+                  padding: '10px 14px',
+                  color: '#ffffff',
+                  fontSize: '12px',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Volume2 size={14} color="#f48c06" />
+                  <span>"{p.text}"</span>
+                </div>
+                <span className="badge badge-saffron" style={{ fontSize: '9px' }}>{p.lang}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '14px' }}>
+          <button onClick={onClose} className="btn-secondary" style={{ fontSize: '12px' }}>
+            {isHi ? "सहायक बंद करें" : "Close Assistant"}
+          </button>
         </div>
       </div>
     </div>
   );
 };
+

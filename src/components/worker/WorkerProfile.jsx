@@ -1,132 +1,206 @@
 import React from 'react';
 import { usePlatform } from '../../context/PlatformContext';
-import { MapPin, Star, ShieldCheck, Wrench, Award, Clock } from 'lucide-react';
+import { ShieldCheck, Award, QrCode, CheckCircle, Wrench, FileCheck, Phone, MapPin, Building } from 'lucide-react';
 
 export const WorkerProfile = () => {
-  const { language, currentWorker } = usePlatform();
+  const { currentWorker, language } = usePlatform();
   const isHi = language === 'hi';
-  const w = currentWorker;
 
-  const SPECIALIZATIONS = [
-    { en: 'LT/HT Wiring & Switchgear',    hi: 'LT/HT वायरिंग और स्विचगियर' },
-    { en: 'AC Installation & Servicing',   hi: 'AC इंस्टॉलेशन और सर्विसिंग' },
-    { en: 'Solar Panel Wiring (NCCT)',      hi: 'सौर पैनल वायरिंग (NCCT)' },
-    { en: 'Inverter & Battery Systems',    hi: 'इनवर्टर और बैटरी सिस्टम' },
-  ];
-
-  const TOOLS = [
-    { en: 'Insulated Screwdrivers Set', hi: 'इंसुलेटेड पेचकस सेट', verified: true },
-    { en: 'Digital Multimeter', hi: 'डिजिटल मल्टीमीटर', verified: true },
-    { en: 'Wire Stripper & Crimper', hi: 'वायर स्ट्रिपर और क्रिम्पर', verified: true },
-    { en: 'Safety Harness & Gloves', hi: 'सेफ्टी हार्नेस और दस्ताने', verified: true },
-  ];
-
-  const REVIEWS = [
-    { name: 'Rajesh Kumar', rating: 5, text_en: 'Excellent work, very professional. Came on time.', text_hi: 'बेहतरीन काम, बहुत पेशेवर। समय पर आए।', date: '2 Sep 2026' },
-    { name: 'Sunita Sharma', rating: 5, text_en: 'Fixed the AC quickly. Good cooperative worker.', text_hi: 'AC जल्दी ठीक किया। अच्छे सहकारी कामगार।', date: '1 Sep 2026' },
-    { name: 'Mohan Lal', rating: 4, text_en: 'Very knowledgeable. Price was fair and transparent.', text_hi: 'बहुत जानकार। कीमत उचित और पारदर्शी थी।', date: '30 Aug 2026' },
+  const verifiedTools = isHi ? [
+    "फ्लूक डिजिटल मल्टीमीटर (CAT III 600V)",
+    "1000V इंसुलेटेड VDE स्क्रूड्राइवर सेट",
+    "बॉश रोटरी हैमर ड्रिल मशीन (GBH 2-20)",
+    "गैर-संपर्क एसी वोल्टेज डिटेक्टर",
+    "इंसुलेटेड सुरक्षा दस्ताने एवं ISI सुरक्षा हेलमेट"
+  ] : [
+    "Fluke Digital Multimeter (CAT III 600V)",
+    "1000V Insulated VDE Screwdriver Set",
+    "Bosch Rotary Hammer Drill (GBH 2-20)",
+    "Non-Contact AC Voltage Detector",
+    "Insulated Safety Gloves & ISI Helmet"
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-lg)' }}>
-      {/* Profile card */}
-      <div className="card">
-        <div style={{ display: 'flex', gap: 'var(--sp-lg)', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+    <div style={{ maxWidth: '780px', margin: '0 auto' }}>
+      {/* Official Cooperative Digital ID Card */}
+      <div
+        style={{
+          background: 'linear-gradient(135deg, #091a32 0%, #15325c 50%, #0c203f 100%)',
+          border: '2px solid var(--saffron)',
+          borderRadius: '24px',
+          padding: '28px',
+          boxShadow: '0 20px 45px rgba(0,0,0,0.6), 0 0 25px rgba(244,140,6,0.25)',
+          position: 'relative',
+          overflow: 'hidden',
+          marginBottom: '28px'
+        }}
+      >
+        {/* Top Ribbon */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.15)', paddingBottom: '14px', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ width: '38px', height: '38px', background: 'var(--saffron)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <ShieldCheck size={24} color="#ffffff" />
+            </div>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: '15px', letterSpacing: '0.04em', color: '#ffffff' }}>
+                {isHi ? "राष्ट्रीय सहकारी प्रशिक्षण परिषद (NCCT)" : "NATIONAL COUNCIL FOR COOPERATIVE TRAINING"}
+              </div>
+              <div style={{ fontSize: '11px', color: '#34d399' }}>
+                {isHi ? "सहकारिता मंत्रालय • डिजिटल कारीगर पहचान पत्र" : "Ministry of Cooperation • Digital Artisan Credential"}
+              </div>
+            </div>
+          </div>
+
+          <span className="badge badge-saffron" style={{ fontSize: '11px' }}>
+            {isHi ? "NCCT लेवल-4 मास्टर" : "NCCT LEVEL-4 MASTER"}
+          </span>
+        </div>
+
+        {/* Card Body */}
+        <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'center' }}>
+          {/* Avatar with Gold Border */}
+          <div style={{ position: 'relative' }}>
             <img
-              src={w?.photo || 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=150&auto=format&fit=crop&q=80'}
-              alt={w?.name}
-              style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--border)' }}
-              onError={e => { e.target.style.display = 'none'; }}
+              src={currentWorker.avatarUrl}
+              alt={currentWorker.name}
+              style={{
+                width: '120px',
+                height: '120px',
+                borderRadius: '20px',
+                objectFit: 'cover',
+                border: '3px solid var(--saffron)',
+                boxShadow: '0 8px 20px rgba(0,0,0,0.5)'
+              }}
             />
-            <span className="badge badge-green"><ShieldCheck size={11} /> {isHi ? 'NCCT सत्यापित' : 'NCCT Verified'}</span>
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '-8px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: '#10b981',
+                color: 'white',
+                fontSize: '10px',
+                fontWeight: 800,
+                padding: '2px 8px',
+                borderRadius: '12px',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {isHi ? "सत्यापित" : "VERIFIED"}
+            </div>
           </div>
-          <div style={{ flex: 1, minWidth: 200 }}>
-            <h2 style={{ fontFamily: 'var(--font-head)', fontSize: 22, fontWeight: 800, color: 'var(--navy)', marginBottom: 4 }}>
-              {w?.name || 'Satish Kumar Verma'}
-            </h2>
-            <div style={{ fontSize: 15, color: 'var(--text-muted)', marginBottom: 8 }}>
-              {isHi ? 'मुख्य इलेक्ट्रीशियन एवं सौर तकनीशियन' : 'Chief Electrician & Solar Technician'}
+
+          {/* Details */}
+          <div style={{ flex: 1 }}>
+            <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#ffffff' }}>{currentWorker.name}</h2>
+            <div style={{ fontSize: '13px', color: 'var(--saffron-light)', fontWeight: 600, marginTop: '2px' }}>
+              {isHi ? "व्यवसाय: मुख्य इलेक्ट्रीशियन एवं सोलर इन्वर्टर विशेषज्ञ" : "Trade: Master Electrician & Solar Inverter Specialist"}
             </div>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
-              <span className="ncct-badge">NCCT Level 4</span>
-              <span className="badge badge-navy"><MapPin size={11} /> {w?.district || 'New Delhi'}</span>
-              <span className="badge badge-amber">8 {isHi ? 'वर्ष अनुभव' : 'yrs experience'}</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-              <div style={{ display: 'flex', gap: 2 }}>
-                {[1,2,3,4,5].map(s => (
-                  <span key={s} style={{ color: s <= 4.9 ? '#F59E0B' : 'var(--border)', fontSize: 18 }}>★</span>
-                ))}
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '14px', fontSize: '12px' }}>
+              <div>
+                <span style={{ color: 'var(--text-muted)' }}>{isHi ? "सहकारी समिति:" : "Cooperative Society:"}</span>
+                <div style={{ fontWeight: 600, color: '#ffffff' }}>{currentWorker.societyName}</div>
               </div>
-              <span style={{ fontWeight: 700, fontSize: 16 }}>4.9</span>
-              <span style={{ color: 'var(--text-muted)', fontSize: 14 }}>({w?.reviews || 312} {isHi ? 'समीक्षाएं' : 'reviews'})</span>
-            </div>
-            <div style={{ fontSize: 14, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
-              🏛 {w?.society || 'Delhi Shramik Sahakari Federation'}
-            </div>
-          </div>
-
-          {/* Rate card */}
-          <div style={{ textAlign: 'center', background: 'var(--saffron-pale)', border: '2px solid #FFCCBC', borderRadius: 'var(--r-lg)', padding: 'var(--sp-md) var(--sp-lg)', minWidth: 140 }}>
-            <div style={{ fontFamily: 'var(--font-head)', fontSize: 32, fontWeight: 800, color: 'var(--saffron)' }}>₹350</div>
-            <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>{isHi ? 'प्रति घंटा (NCCT दर)' : 'per hour (NCCT rate)'}</div>
-            <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>+ {isHi ? 'न्यूनतम 1 घंटा' : '1 hr minimum'}</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Specializations */}
-      <div className="card">
-        <h3 style={{ fontFamily: 'var(--font-head)', fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 'var(--sp-md)' }}>
-          <Award size={16} style={{ display: 'inline', marginRight: 6 }} />
-          {isHi ? 'विशेषज्ञता' : 'Specializations'}
-        </h3>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-          {SPECIALIZATIONS.map((s, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', background: 'var(--bg)', borderRadius: 'var(--r-md)', border: '1px solid var(--border)', fontSize: 14 }}>
-              <span style={{ color: 'var(--green)', flexShrink: 0 }}>✓</span>
-              <span style={{ color: 'var(--text)' }}>{isHi ? s.hi : s.en}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Tools & Safety */}
-      <div className="card">
-        <h3 style={{ fontFamily: 'var(--font-head)', fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 'var(--sp-md)' }}>
-          <Wrench size={16} style={{ display: 'inline', marginRight: 6 }} />
-          {isHi ? 'सत्यापित उपकरण व सुरक्षा गियर' : 'Verified Tools & Safety Gear'}
-        </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {TOOLS.map((t, i) => (
-            <div key={i} className="flex-between" style={{ padding: '10px 12px', background: 'var(--bg)', borderRadius: 'var(--r-md)', border: '1px solid var(--border)' }}>
-              <span style={{ fontSize: 14 }}>{isHi ? t.hi : t.en}</span>
-              {t.verified && <span className="badge badge-green"><ShieldCheck size={10} /> {isHi ? 'सत्यापित' : 'Verified'}</span>}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Reviews */}
-      <div className="card">
-        <h3 style={{ fontFamily: 'var(--font-head)', fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 'var(--sp-md)' }}>
-          <Star size={16} style={{ display: 'inline', marginRight: 6 }} />
-          {isHi ? 'ग्राहक समीक्षाएं' : 'Customer Reviews'}
-        </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {REVIEWS.map((r, i) => (
-            <div key={i} style={{ padding: 'var(--sp-md)', background: 'var(--bg)', borderRadius: 'var(--r-md)', border: '1px solid var(--border)' }}>
-              <div className="flex-between" style={{ marginBottom: 6 }}>
-                <div style={{ fontWeight: 700, fontSize: 14 }}>{r.name}</div>
-                <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-                  <span style={{ color: '#F59E0B' }}>{'★'.repeat(r.rating)}</span>
-                  <span style={{ fontSize: 12, color: 'var(--text-muted)', marginLeft: 4 }}>{r.date}</span>
-                </div>
+              <div>
+                <span style={{ color: 'var(--text-muted)' }}>{isHi ? "NCCT प्रमाण पत्र क्रमांक:" : "NCCT Certificate ID:"}</span>
+                <div style={{ fontWeight: 700, color: '#38bdf8' }}>{currentWorker.ncctCertId}</div>
               </div>
-              <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.5 }}>
-                "{isHi ? r.text_hi : r.text_en}"
-              </p>
+              <div>
+                <span style={{ color: 'var(--text-muted)' }}>{isHi ? "कार्य अनुभव:" : "Experience:"}</span>
+                <div style={{ fontWeight: 600, color: '#ffffff' }}>{currentWorker.experienceYears} {isHi ? "वर्ष पंजीकृत" : "Years Registered"}</div>
+              </div>
+              <div>
+                <span style={{ color: 'var(--text-muted)' }}>{isHi ? "रेटिंग:" : "Rating:"}</span>
+                <div style={{ fontWeight: 700, color: '#ffba08' }}>★ {currentWorker.rating} ({currentWorker.ratingCount} {isHi ? "समीक्षाएं" : "Reviews"})</div>
+              </div>
+            </div>
+          </div>
+
+          {/* QR Code for instant consumer scan */}
+          <div
+            style={{
+              background: '#ffffff',
+              padding: '12px',
+              borderRadius: '16px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+            }}
+          >
+            <div style={{ width: '80px', height: '80px', background: '#091a32', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <QrCode size={64} color="#ffffff" />
+            </div>
+            <span style={{ fontSize: '9px', fontWeight: 700, color: '#091a32', marginTop: '4px' }}>
+              {isHi ? "सत्यापन हेतु स्कैन करें" : "SCAN TO VERIFY"}
+            </span>
+          </div>
+        </div>
+
+        {/* Verification Checkmarks Footer */}
+        <div
+          style={{
+            marginTop: '22px',
+            paddingTop: '14px',
+            borderTop: '1px solid rgba(255,255,255,0.12)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            fontSize: '11px',
+            flexWrap: 'wrap',
+            gap: '10px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#34d399' }}>
+            <CheckCircle size={14} /> {isHi ? "आधार e-KYC प्रमाणित" : "Aadhaar e-KYC Linked"}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#34d399' }}>
+            <CheckCircle size={14} /> {isHi ? "पुलिस सत्यापन (PCC-DL-491)" : "Police Clearance (PCC-DL-491)"}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#34d399' }}>
+            <CheckCircle size={14} /> {isHi ? "NCCT प्रैक्टिकल लैब उत्तीर्ण (98%)" : "NCCT Practical Lab Passed (98%)"}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#34d399' }}>
+            <CheckCircle size={14} /> {isHi ? "औजार सुरक्षा प्रमाणित" : "Tool Safety Certified"}
+          </div>
+        </div>
+      </div>
+
+      {/* Verified Professional Toolset Inventory */}
+      <div className="glass-panel" style={{ padding: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+          <Wrench size={20} color="var(--saffron)" />
+          <h3 style={{ fontSize: '18px' }}>
+            {isHi ? "प्रमाणित औजार सूची एवं सुरक्षा उपकरण" : "Certified Tool Inventory & Safety Gear"}
+          </h3>
+        </div>
+        <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px' }}>
+          {isHi ? "क्षेत्रीय सहकारी प्रबंधन संस्थान (RICM) कार्यशाला द्वारा वार्षिक रूप से प्रमाणित।" : "Inspected annually at the Regional Institute of Cooperative Management (RICM) training workshop."}
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {verifiedTools.map((tool, idx) => (
+            <div
+              key={idx}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                background: 'rgba(255,255,255,0.03)',
+                padding: '10px 14px',
+                borderRadius: '10px',
+                border: '1px solid rgba(255,255,255,0.06)'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px' }}>
+                <CheckCircle size={16} color="#10b981" />
+                <span>{tool}</span>
+              </div>
+              <span className="badge badge-emerald" style={{ fontSize: '9px' }}>
+                {isHi ? "ISI प्रमाणित" : "ISI Verified"}
+              </span>
             </div>
           ))}
         </div>

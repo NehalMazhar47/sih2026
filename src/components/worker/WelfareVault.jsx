@@ -76,7 +76,7 @@ export const WelfareVault = () => {
               {isHi ? "श्रमिक कल्याण एवं सामाजिक सुरक्षा कोष" : "Worker Welfare & Social Security Vault"}
             </h2>
             <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px', maxWidth: '640px' }}>
-              {isHi ? "निजी गिग कंपनियों के विपरीत जो श्रमिकों को अधिकारहीन मानती हैं, सहकार सेवा पर प्रत्येक सेवा से आपका आयुष्मान भारत स्वास्थ्य कार्ड, PMJJBY जीवन बीमा, PM-SYM पेंशन एवं संकटकालीन ऋण स्वतः वित्तपोषित होता है।" : "Unlike private gig platforms that treat workers as disposable contractors, every gig on SahakarSeva automatically funds your Ayushman Bharat health card, PMJJBY life insurance, PM-SYM pension, and distress micro-credit."}
+              {isHi ? "निजी गिग कंपनियों के विपरीत जो श्रमिकों को अधिकारहीन मानती हैं, श्रमसेतु पर प्रत्येक सेवा से आपका आयुष्मान भारत स्वास्थ्य कार्ड, PMJJBY जीवन बीमा, PM-SYM पेंशन एवं संकटकालीन ऋण स्वतः वित्तपोषित होता है।" : "Unlike private gig platforms that treat workers as disposable contractors, every gig on ShramSetu automatically funds your Ayushman Bharat health card, PMJJBY life insurance, PM-SYM pension, and distress micro-credit."}
             </p>
           </div>
 

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { usePlatform } from '../../context/PlatformContext';
-import { REGIONAL_LANGUAGES } from '../../data/translations';
 import {
   Users, HardHat, Building2, Globe, Mic, Phone,
   ShieldCheck, Sparkles, ChevronDown
@@ -106,7 +105,7 @@ export const Navbar = ({ onOpenPitch }) => {
               <ShieldCheck size={24} color="#FFB74D" />
             </div>
             <div className="brand-text">
-              <div className="brand-name">SahakarSeva</div>
+              <div className="brand-name">ShramSetu</div>
               <div className="brand-tagline">{t('appSubtitle')}</div>
             </div>
           </div>
@@ -152,7 +151,25 @@ export const Navbar = ({ onOpenPitch }) => {
 
           {/* Controls */}
           <div className="nav-controls">
-            {/* Language selector */}
+            {/* Quick 1-click Hindi Toggle */}
+            <button
+              id="quick-toggle-hindi-btn"
+              className="btn btn-ghost btn-sm"
+              onClick={() => setLanguage(language === 'hi' ? 'en' : 'hi')}
+              style={{
+                border: '1.5px solid var(--border)',
+                borderRadius: 'var(--r-full)',
+                fontWeight: 700,
+                fontSize: 12,
+                color: language === 'hi' ? 'var(--saffron)' : 'var(--navy)',
+                background: language === 'hi' ? 'var(--saffron-pale)' : 'var(--bg)',
+                padding: '5px 12px'
+              }}
+            >
+              {language === 'hi' ? '🌐 English' : '🇮🇳 हिन्दी'}
+            </button>
+
+            {/* Regional Language dropdown */}
             <div style={{ position: 'relative' }}>
               <button
                 className="lang-select"
@@ -227,7 +244,7 @@ export const Navbar = ({ onOpenPitch }) => {
               )}
             </div>
 
-            {/* Voice button */}
+            {/* Voice Search button */}
             <button
               id="toggle-mobile-view-btn"
               className="btn btn-ghost btn-icon"
@@ -237,7 +254,7 @@ export const Navbar = ({ onOpenPitch }) => {
               <Mic size={17} color="var(--navy)" />
             </button>
 
-            {/* SOS */}
+            {/* Emergency SOS button */}
             <button
               id="sos-btn"
               className="btn-sos"

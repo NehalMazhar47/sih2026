@@ -1,4 +1,4 @@
-// Master Multi-Region Indian Language Translations for SahakarSeva Platform
+// Master Multi-Region Indian Language Translations for ShramSetu Platform
 // Covering North, South, East, West, and Central India
 
 export const REGIONAL_LANGUAGES = [
@@ -52,7 +52,7 @@ export const translations = {
     cardNcctTitle: "NCCT & Platform",
     cardNcctSub: "Server costs & skill courses",
     launchNpciBtn: "⚡ Launch Live NPCI / AePS 88-7-5 Split Banking Simulator",
-    coopTitle: "SahakarSeva (Cooperative)",
+    coopTitle: "ShramSetu (Cooperative)",
     coopSub: "Worker-Owned Collective",
     privateTitle: "Private Aggregator Platforms",
     privateSub: "For-profit Venture Capital Model",
@@ -104,13 +104,13 @@ export const translations = {
     tabVerification: "Artisan Verification Desk",
     tabDisputes: "Grievance & Dispute Redressal",
     tabGem: "GeM Public Procurement (GFR 153)",
-    footerTitle: "SahakarSeva (सहकार सेवा) • Smart India Hackathon 2026",
+    footerTitle: "ShramSetu (श्रमसेतु) • Smart India Hackathon 2026",
     footerProblem: "Problem Statement ID: 26089 | Ministry of Cooperation | National Council for Cooperative Training (NCCT)",
     footerTheme: "Theme: Agriculture, FoodTech & Rural Development",
     footerTagline: "• \"Sahakar se Samriddhi\"",
     ruralOfflineBtn: "Rural / Offline Fallback",
     gramPanchayatSms: "Gram Panchayat SMS Mode",
-    appTitle: "SahakarSeva",
+    appTitle: "ShramSetu",
     appSubtitle: "Cooperative Gig Services Platform",
     govLabel: "Ministry of Cooperation | NCCT Government of India",
     tagline: "Sahakar se Samriddhi • Worker-Owned • Fair Living Wages",
@@ -221,7 +221,7 @@ export const translations = {
     cardNcctTitle: "NCCT एवं मंच",
     cardNcctSub: "सर्वर खर्च व प्रशिक्षण",
     launchNpciBtn: "⚡ लाइव NPCI / AePS 88-7-5 बैंक भुगतान सिम्युलेटर खोलें",
-    coopTitle: "सहकार सेवा (सहकारी मंच)",
+    coopTitle: "श्रमसेतु (सहकारी मंच)",
     coopSub: "श्रमिक-स्वामित्व वाला समूह",
     privateTitle: "निजी एग्रीगेटर मंच",
     privateSub: "मुनाफा-आधारित निजी मॉडल",
@@ -273,13 +273,13 @@ export const translations = {
     tabVerification: "कारीगर सत्यापन डेस्क",
     tabDisputes: "शिकायत एवं विवाद निवारण",
     tabGem: "GeM सार्वजनिक खरीद (GFR 153)",
-    footerTitle: "सहकार सेवा • स्मार्ट इंडिया हैकाथॉन 2026",
+    footerTitle: "श्रमसेतु • स्मार्ट इंडिया हैकाथॉन 2026",
     footerProblem: "समस्या विवरण ID: 26089 | सहकारिता मंत्रालय | राष्ट्रीय सहकारी प्रशिक्षण परिषद (NCCT)",
     footerTheme: "विषय: कृषि, खाद्य-प्रौद्योगिकी एवं ग्रामीण विकास",
     footerTagline: "• \"सहकार से समृद्धि\"",
     ruralOfflineBtn: "ग्रामीण / ऑफलाइन व्यवस्था",
     gramPanchayatSms: "ग्राम पंचायत SMS मोड",
-    appTitle: "सहकार सेवा",
+    appTitle: "श्रमसेतु",
     appSubtitle: "घरेलू व सामुदायिक सेवाओं हेतु सहकारी गिग मंच",
     govLabel: "सहकारिता मंत्रालय | राष्ट्रीय सहकारी प्रशिक्षण परिषद (NCCT)",
     tagline: "सहकार से समृद्धि • श्रमिक स्वामित्व • उचित पारिश्रमिक",
@@ -390,7 +390,7 @@ export const translations = {
     cardNcctTitle: "NCCT व व्यासपीठ",
     cardNcctSub: "सर्व्हर खर्च व प्रशिक्षण",
     launchNpciBtn: "⚡ थेट NPCI / AePS 88-7-5 बँक वाटप सिम्युलेटर सुरू करा",
-    coopTitle: "सहकार सेवा (सहकारी संस्था)",
+    coopTitle: "श्रमसेतु (सहकारी संस्था)",
     coopSub: "कामगारांचे हक्काचे संघटन",
     privateTitle: "खाजगी कंपन्या",
     privateSub: "नफेखोर व्हेंचर कॅपिटल मॉडेल",
@@ -442,13 +442,13 @@ export const translations = {
     tabVerification: "कामगार पडताळणी डेस्क",
     tabDisputes: "तक्रार व वाद निवारण कक्ष",
     tabGem: "GeM शासकीय खरेदी (GFR 153)",
-    footerTitle: "सहकार सेवा • स्मार्ट इंडिया हॅकाथॉन 2026",
+    footerTitle: "श्रमसेतु • स्मार्ट इंडिया हॅकाथॉन 2026",
     footerProblem: "समस्या विवरण ID: 26089 | सहकार मंत्रालय | राष्ट्रीय सहकारी प्रशिक्षण परिषद (NCCT)",
     footerTheme: "विषय: कृषी, फूडटेक आणि ग्रामीण विकास",
     footerTagline: "• \"सहकारातून समृद्धी\"",
     ruralOfflineBtn: "ग्रामीण / ऑफलाइन व्यवस्था",
     gramPanchayatSms: "ग्रामपंचायत SMS मोड",
-    appTitle: "सहकार सेवा",
+    appTitle: "श्रमसेतु",
     appSubtitle: "घरगुती व समुदाय सेवांसाठी सहकारी गिग व्यासपीठ",
     govLabel: "सहकार मंत्रालय | राष्ट्रीय सहकारी प्रशिक्षण परिषद (NCCT)",
     tagline: "सहकारातून समृद्धी • कामगारांचे स्वामित्व • योग्य वेतन",
@@ -559,7 +559,7 @@ export const translations = {
     cardNcctTitle: "NCCT एवं मंच",
     cardNcctSub: "सर्वर खर्च व प्रशिक्षण",
     launchNpciBtn: "⚡ लाइव NPCI / AePS 88-7-5 बैंक भुगतान सिम्युलेटर खोलें",
-    coopTitle: "सहकार सेवा (सहकारी मंच)",
+    coopTitle: "श्रमसेतु (सहकारी मंच)",
     coopSub: "श्रमिक-स्वामित्व वाला समूह",
     privateTitle: "निजी एग्रीगेटर मंच",
     privateSub: "मुनाफा-आधारित निजी मॉडल",
@@ -611,7 +611,7 @@ export const translations = {
     tabVerification: "कारीगर सत्यापन डेस्क",
     tabDisputes: "शिकायत एवं विवाद निवारण",
     tabGem: "GeM सार्वजनिक खरीद (GFR 153)",
-    footerTitle: "सहकार सेवा • स्मार्ट इंडिया हैकाथॉन 2026",
+    footerTitle: "श्रमसेतु • स्मार्ट इंडिया हैकाथॉन 2026",
     footerProblem: "समस्या विवरण ID: 26089 | सहकारिता मंत्रालय | राष्ट्रीय सहकारी प्रशिक्षण परिषद (NCCT)",
     footerTheme: "विषय: कृषि, खाद्य-प्रौद्योगिकी एवं ग्रामीण विकास",
     footerTagline: "• \"सहकार से समृद्धि\"",
@@ -728,7 +728,7 @@ export const translations = {
     cardNcctTitle: "NCCT एवं मंच",
     cardNcctSub: "सर्वर खर्च व प्रशिक्षण",
     launchNpciBtn: "⚡ लाइव NPCI / AePS 88-7-5 बैंक भुगतान सिम्युलेटर खोलें",
-    coopTitle: "सहकार सेवा (सहकारी मंच)",
+    coopTitle: "श्रमसेतु (सहकारी मंच)",
     coopSub: "श्रमिक-स्वामित्व वाला समूह",
     privateTitle: "निजी एग्रीगेटर मंच",
     privateSub: "मुनाफा-आधारित निजी मॉडल",
@@ -780,7 +780,7 @@ export const translations = {
     tabVerification: "कारीगर सत्यापन डेस्क",
     tabDisputes: "शिकायत एवं विवाद निवारण",
     tabGem: "GeM सार्वजनिक खरीद (GFR 153)",
-    footerTitle: "सहकार सेवा • स्मार्ट इंडिया हैकाथॉन 2026",
+    footerTitle: "श्रमसेतु • स्मार्ट इंडिया हैकाथॉन 2026",
     footerProblem: "समस्या विवरण ID: 26089 | सहकारिता मंत्रालय | राष्ट्रीय सहकारी प्रशिक्षण परिषद (NCCT)",
     footerTheme: "विषय: कृषि, खाद्य-प्रौद्योगिकी एवं ग्रामीण विकास",
     footerTagline: "• \"सहकार से समृद्धि\"",
@@ -897,7 +897,7 @@ export const translations = {
     cardNcctTitle: "NCCT एवं मंच",
     cardNcctSub: "सर्वर खर्च व प्रशिक्षण",
     launchNpciBtn: "⚡ लाइव NPCI / AePS 88-7-5 बैंक भुगतान सिम्युलेटर खोलें",
-    coopTitle: "सहकार सेवा (सहकारी मंच)",
+    coopTitle: "श्रमसेतु (सहकारी मंच)",
     coopSub: "श्रमिक-स्वामित्व वाला समूह",
     privateTitle: "निजी एग्रीगेटर मंच",
     privateSub: "मुनाफा-आधारित निजी मॉडल",
@@ -949,7 +949,7 @@ export const translations = {
     tabVerification: "कारीगर सत्यापन डेस्क",
     tabDisputes: "शिकायत एवं विवाद निवारण",
     tabGem: "GeM सार्वजनिक खरीद (GFR 153)",
-    footerTitle: "सहकार सेवा • स्मार्ट इंडिया हैकाथॉन 2026",
+    footerTitle: "श्रमसेतु • स्मार्ट इंडिया हैकाथॉन 2026",
     footerProblem: "समस्या विवरण ID: 26089 | सहकारिता मंत्रालय | राष्ट्रीय सहकारी प्रशिक्षण परिषद (NCCT)",
     footerTheme: "विषय: कृषि, खाद्य-प्रौद्योगिकी एवं ग्रामीण विकास",
     footerTagline: "• \"सहकार से समृद्धि\"",
@@ -1066,7 +1066,7 @@ export const translations = {
     cardNcctTitle: "NCCT एवं मंच",
     cardNcctSub: "सर्वर खर्च व प्रशिक्षण",
     launchNpciBtn: "⚡ लाइव NPCI / AePS 88-7-5 बैंक भुगतान सिम्युलेटर खोलें",
-    coopTitle: "सहकार सेवा (सहकारी मंच)",
+    coopTitle: "श्रमसेतु (सहकारी मंच)",
     coopSub: "श्रमिक-स्वामित्व वाला समूह",
     privateTitle: "निजी एग्रीगेटर मंच",
     privateSub: "मुनाफा-आधारित निजी मॉडल",
@@ -1118,12 +1118,19 @@ export const translations = {
     tabVerification: "कारीगर सत्यापन डेस्क",
     tabDisputes: "शिकायत एवं विवाद निवारण",
     tabGem: "GeM सार्वजनिक खरीद (GFR 153)",
-    footerTitle: "सहकार सेवा • स्मार्ट इंडिया हैकाथॉन 2026",
+    footerTitle: "श्रमसेतु • स्मार्ट इंडिया हैकाथॉन 2026",
     footerProblem: "समस्या विवरण ID: 26089 | सहकारिता मंत्रालय | राष्ट्रीय सहकारी प्रशिक्षण परिषद (NCCT)",
     footerTheme: "विषय: कृषि, खाद्य-प्रौद्योगिकी एवं ग्रामीण विकास",
     footerTagline: "• \"सहकार से समृद्धि\"",
     ruralOfflineBtn: "ग्रामीण / ऑफलाइन व्यवस्था",
     gramPanchayatSms: "ग्राम पंचायत SMS मोड",
+    appTitle: "సహకార సేవ",
+    appSubtitle: "గృహ & సమాజ సేవల కొరకు సహకార గిగ్ వేదిక",
+    govLabel: "సహకార మంత్రిత్వ శాఖ | జాతీయ సహకార శిక్షణ మండలి (NCCT)",
+    tagline: "సహకారం ద్వారా సమృద్ధి • కార్మికుల యాజమాన్యం • న్యాయమైన వేతనం",
+    roleCustomer: "వినియోగదారుడు / గృహం",
+    roleWorker: "కార్మికుడు (శ్రామిక సహకారి)",
+    roleAdmin: "ఫెడరేషన్ & NCCT పరిపాలన",
     emergencySOS: "అత్యవసర 15-నిమిషాల SOS",
     emergencyDesc: "విద్యుత్, ప్లంబింగ్ లేదా వృద్ధుల అత్యవసర సహాయం కొరకు త్వరిత సేవ",
     scheduleService: "సేవ బుక్ చేయండి",
@@ -1228,7 +1235,7 @@ export const translations = {
     cardNcctTitle: "NCCT एवं मंच",
     cardNcctSub: "सर्वर खर्च व प्रशिक्षण",
     launchNpciBtn: "⚡ लाइव NPCI / AePS 88-7-5 बैंक भुगतान सिम्युलेटर खोलें",
-    coopTitle: "सहकार सेवा (सहकारी मंच)",
+    coopTitle: "श्रमसेतु (सहकारी मंच)",
     coopSub: "श्रमिक-स्वामित्व वाला समूह",
     privateTitle: "निजी एग्रीगेटर मंच",
     privateSub: "मुनाफा-आधारित निजी मॉडल",
@@ -1280,7 +1287,7 @@ export const translations = {
     tabVerification: "कारीगर सत्यापन डेस्क",
     tabDisputes: "शिकायत एवं विवाद निवारण",
     tabGem: "GeM सार्वजनिक खरीद (GFR 153)",
-    footerTitle: "सहकार सेवा • स्मार्ट इंडिया हैकाथॉन 2026",
+    footerTitle: "श्रमसेतु • स्मार्ट इंडिया हैकाथॉन 2026",
     footerProblem: "समस्या विवरण ID: 26089 | सहकारिता मंत्रालय | राष्ट्रीय सहकारी प्रशिक्षण परिषद (NCCT)",
     footerTheme: "विषय: कृषि, खाद्य-प्रौद्योगिकी एवं ग्रामीण विकास",
     footerTagline: "• \"सहकार से समृद्धि\"",
@@ -1397,7 +1404,7 @@ export const translations = {
     cardNcctTitle: "NCCT एवं मंच",
     cardNcctSub: "सर्वर खर्च व प्रशिक्षण",
     launchNpciBtn: "⚡ लाइव NPCI / AePS 88-7-5 बैंक भुगतान सिम्युलेटर खोलें",
-    coopTitle: "सहकार सेवा (सहकारी मंच)",
+    coopTitle: "श्रमसेतु (सहकारी मंच)",
     coopSub: "श्रमिक-स्वामित्व वाला समूह",
     privateTitle: "निजी एग्रीगेटर मंच",
     privateSub: "मुनाफा-आधारित निजी मॉडल",
@@ -1449,7 +1456,7 @@ export const translations = {
     tabVerification: "कारीगर सत्यापन डेस्क",
     tabDisputes: "शिकायत एवं विवाद निवारण",
     tabGem: "GeM सार्वजनिक खरीद (GFR 153)",
-    footerTitle: "सहकार सेवा • स्मार्ट इंडिया हैकाथॉन 2026",
+    footerTitle: "श्रमसेतु • स्मार्ट इंडिया हैकाथॉन 2026",
     footerProblem: "समस्या विवरण ID: 26089 | सहकारिता मंत्रालय | राष्ट्रीय सहकारी प्रशिक्षण परिषद (NCCT)",
     footerTheme: "विषय: कृषि, खाद्य-प्रौद्योगिकी एवं ग्रामीण विकास",
     footerTagline: "• \"सहकार से समृद्धि\"",
@@ -1566,7 +1573,7 @@ export const translations = {
     cardNcctTitle: "NCCT एवं मंच",
     cardNcctSub: "सर्वर खर्च व प्रशिक्षण",
     launchNpciBtn: "⚡ लाइव NPCI / AePS 88-7-5 बैंक भुगतान सिम्युलेटर खोलें",
-    coopTitle: "सहकार सेवा (सहकारी मंच)",
+    coopTitle: "श्रमसेतु (सहकारी मंच)",
     coopSub: "श्रमिक-स्वामित्व वाला समूह",
     privateTitle: "निजी एग्रीगेटर मंच",
     privateSub: "मुनाफा-आधारित निजी मॉडल",
@@ -1618,7 +1625,7 @@ export const translations = {
     tabVerification: "कारीगर सत्यापन डेस्क",
     tabDisputes: "शिकायत एवं विवाद निवारण",
     tabGem: "GeM सार्वजनिक खरीद (GFR 153)",
-    footerTitle: "सहकार सेवा • स्मार्ट इंडिया हैकाथॉन 2026",
+    footerTitle: "श्रमसेतु • स्मार्ट इंडिया हैकाथॉन 2026",
     footerProblem: "समस्या विवरण ID: 26089 | सहकारिता मंत्रालय | राष्ट्रीय सहकारी प्रशिक्षण परिषद (NCCT)",
     footerTheme: "विषय: कृषि, खाद्य-प्रौद्योगिकी एवं ग्रामीण विकास",
     footerTagline: "• \"सहकार से समृद्धि\"",
@@ -1735,7 +1742,7 @@ export const translations = {
     cardNcctTitle: "NCCT एवं मंच",
     cardNcctSub: "सर्वर खर्च व प्रशिक्षण",
     launchNpciBtn: "⚡ लाइव NPCI / AePS 88-7-5 बैंक भुगतान सिम्युलेटर खोलें",
-    coopTitle: "सहकार सेवा (सहकारी मंच)",
+    coopTitle: "श्रमसेतु (सहकारी मंच)",
     coopSub: "श्रमिक-स्वामित्व वाला समूह",
     privateTitle: "निजी एग्रीगेटर मंच",
     privateSub: "मुनाफा-आधारित निजी मॉडल",
@@ -1787,7 +1794,7 @@ export const translations = {
     tabVerification: "कारीगर सत्यापन डेस्क",
     tabDisputes: "शिकायत एवं विवाद निवारण",
     tabGem: "GeM सार्वजनिक खरीद (GFR 153)",
-    footerTitle: "सहकार सेवा • स्मार्ट इंडिया हैकाथॉन 2026",
+    footerTitle: "श्रमसेतु • स्मार्ट इंडिया हैकाथॉन 2026",
     footerProblem: "समस्या विवरण ID: 26089 | सहकारिता मंत्रालय | राष्ट्रीय सहकारी प्रशिक्षण परिषद (NCCT)",
     footerTheme: "विषय: कृषि, खाद्य-प्रौद्योगिकी एवं ग्रामीण विकास",
     footerTagline: "• \"सहकार से समृद्धि\"",
@@ -1875,71 +1882,61 @@ export const CATEGORY_I18N = {
     "hi": "इलेक्ट्रीशियन एवं सौर तकनीशियन",
     "mr": "इलेक्ट्रिशियन व सोलर तज्ज्ञ",
     "desc_hi": "वायरिंग, स्विचबोर्ड प्रतिस्थापन, शॉर्ट सर्किट, ट्रिपिंग और सोलर इनवर्टर मरम्मत।",
-    "desc_mr": "वायरिंग, स्विचबोर्ड बदलणे, शॉर्ट सर्किट आणि सोलर इन्व्हर्टर दुरुस्ती.",
-    "unit_hi": "विजिट व पहला घंटा"
+    "desc_mr": "वायरिंग, स्विचबोर्ड बदलणे, शॉर्ट सर्किट आणि सोलर इन्व्हर्टर दुरुस्ती."
   },
   "plumber": {
     "hi": "प्लंबिंग एवं जल निकासी",
     "mr": "प्लंबिंग व पाणी निचरा",
     "desc_hi": "पाइप फटना, नल लीकेज, बाथरूम फिटिंग, मोटर रिपेयर और वाटर फिल्टर।",
-    "desc_mr": "पाईप गळती, नळ दुरुस्ती, बाथरुम फिटिंग आणि मोटर पंप रिपेअर.",
-    "unit_hi": "विजिट व निरीक्षण"
+    "desc_mr": "पाईप गळती, नळ दुरुस्ती, बाथरुम फिटिंग आणि मोटर पंप रिपेअर."
   },
   "carpenter": {
     "hi": "बढ़ई एवं फर्नीचर कार्य",
     "mr": "सुतारकाम व फर्निचर दुरुस्ती",
     "desc_hi": "दरवाजा लॉक लगाना, फर्नीचर असेंबली, कब्जा बदलना व मॉड्यूलर किचन।",
-    "desc_mr": "दाराचे कुलूप लावणे, फर्निचर जोडणी, बिजागर बदलणे व मॉड्युलर किचन.",
-    "unit_hi": "विजिट व कार्य दर"
+    "desc_mr": "दाराचे कुलूप लावणे, फर्निचर जोडणी, बिजागर बदलणे व मॉड्युलर किचन."
   },
   "painter": {
     "hi": "रंगाई-पुताई व वाटरप्रूफिंग",
     "mr": "रंगकाम व वॉटरप्रूफिंग",
     "desc_hi": "आंतरिक रंगाई, एंटी-फंगल वाटरप्रूफिंग, टेक्सचर वॉल व सम्पूर्ण घर पेंटिंग।",
-    "desc_mr": "घराचे रंगकाम, ओल प्रतिबंधक वॉटरप्रूफिंग, डिझाईन भिंती व सणापूर्वी पेंटिंग.",
-    "unit_hi": "प्रति वर्ग फीट / अनुमान"
+    "desc_mr": "घराचे रंगकाम, ओल प्रतिबंधक वॉटरप्रूफिंग, डिझाईन भिंती व सणापूर्वी पेंटिंग."
   },
   "domestic_help": {
     "hi": "घरेलू सहायिका एवं गृह प्रबंधन",
     "mr": "घरगुती मदतनीस व स्वच्छता",
     "desc_hi": "रसोई सहायता, दैनिक सफाई, बर्तन प्रबंधन व भोजन तैयारी।",
-    "desc_mr": "स्वयंपाकघरातील मदत, दैनंदिन साफसफाई, भांडी व जेवण तयारी मदत.",
-    "unit_hi": "दैनिक / मासिक पैकेज"
+    "desc_mr": "स्वयंपाकघरातील मदत, दैनंदिन साफसफाई, भांडी व जेवण तयारी मदत."
   },
   "caregiver": {
     "hi": "बुजुर्ग एवं रोगी परिचर्या",
     "mr": "ज्येष्ठ नागरिक व रुग्ण काळजीवाहक",
     "desc_hi": "बुजुर्गों की गतिशीलता सहायता, दवा स्मरण, रक्तचाप जांच व फिजियोथेरेपी।",
-    "desc_mr": "ज्येष्ठांना चालण्यास मदत, वेळेवर औषधे देणे, बीपी तपासणी व शुশ্রূষা.",
-    "unit_hi": "दैनिक / 12-घंटे शिफ्ट"
+    "desc_mr": "ज्येष्ठांना चालण्यास मदत, वेळेवर औषधे देणे, बीपी तपासणी व शुশ্রূষা."
   },
   "driver": {
     "hi": "अनुभवी चालक / ड्राइवर",
     "mr": "अनुभवी चालक / ड्रायव्हर",
     "desc_hi": "दैनिक शहर आवागमन, बाहर यात्रा, वरिष्ठ नागरिकों की अस्पताल यात्रा।",
-    "desc_mr": "शहरातील प्रवास, कौटुंबिक सहल, ज्येष्ठ नागरिकांची डॉक्टर भेट.",
-    "unit_hi": "प्रति घंटा / यात्रा"
+    "desc_mr": "शहरातील प्रवास, कौटुंबिक सहल, ज्येष्ठ नागरिकांची डॉक्टर भेट."
   },
   "gardener": {
     "hi": "बागवानी एवं पौधा पोषण",
     "mr": "बागकाम व वनस्पती संगोपन",
     "desc_hi": "बालकनी लॉन संवारना, जैविक खाद, ड्रिप सिंचाई व कीट रोकथाम।",
-    "desc_mr": "बाल्कनी बागकाम, सेंद्रिय खत, ठिबक सिंचन व झाडांची छाटणी.",
-    "unit_hi": "नियमित बगीचा सत्र"
+    "desc_mr": "बाल्कनी बागकाम, सेंद्रिय खत, ठिबक सिंचन व झाडांची छाटणी."
   },
   "cleaner": {
     "hi": "गहन सफाई व स्वच्छता सेवा",
     "mr": "सखोल स्वच्छता व सॅनिटायझेशन",
     "desc_hi": "किचन चिमनी सफाई, बाथरूम जीवाणुरोधक स्क्रब, सोफा शैम्पू व फ्लोर पॉलिश।",
-    "desc_mr": "किचन चिमणी स्वच्छता, बाथरूम स्क्रब, सोफा शॅम्पू व खोल्यांची सखोल स्वच्छता.",
-    "unit_hi": "गहन सफाई सत्र"
+    "desc_mr": "किचन चिमणी स्वच्छता, बाथरूम स्क्रब, सोफा शॅम्पू व खोल्यांची सखोल स्वच्छता."
   },
   "technician": {
     "hi": "उपकरण एवं AC तकनीशियन",
     "mr": "घरगुती उपकरणे व AC तंत्रज्ञ",
     "desc_hi": "स्प्लिट AC जेट वॉश, गैस लीकेज, फ्रिज कंप्रेसर व वाशिंग मशीन रिपेयर।",
-    "desc_mr": "स्प्लिट AC सर्व्हिसिंग, गॅस भरणे, फ्रिज कॉम्प्रेसर व वॉशिंग मशीन दुरुस्ती.",
-    "unit_hi": "निरीक्षण व गैस जांच"
+    "desc_mr": "स्प्लिट AC सर्व्हिसिंग, गॅस भरणे, फ्रिज कॉम्प्रेसर व वॉशिंग मशीन दुरुस्ती."
   }
 };
 
@@ -1979,7 +1976,6 @@ export const getLocalizedCategory = (cat, lang) => {
       ...cat,
       name: localized.hi || cat.hindiName || cat.name,
       description: localized.desc_hi || cat.description,
-      unit: (lang === 'hi' && localized.unit_hi) ? localized.unit_hi : cat.unit,
     };
   }
   if (lang === 'mr') {

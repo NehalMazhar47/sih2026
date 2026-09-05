@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PlatformProvider, usePlatform } from './context/PlatformContext';
 import { Navbar } from './components/common/Navbar';
+import { DeviceFrame } from './components/common/DeviceFrame';
 import { Toast } from './components/common/Toast';
 import { CustomerHome } from './components/customer/CustomerHome';
 import { WorkerDashboard } from './components/worker/WorkerDashboard';
@@ -8,9 +9,10 @@ import { FederationDashboard } from './components/admin/FederationDashboard';
 import { OfflineModeIndicator } from './components/common/OfflineModeIndicator';
 import { HackathonPitchModal } from './components/common/HackathonPitchModal';
 import { VoiceBookingAssistant } from './components/common/VoiceBookingAssistant';
+import { ShieldCheck } from 'lucide-react';
 
 const AppContent = () => {
-  const { role, t, language } = usePlatform();
+  const { role, isMobileView, t } = usePlatform();
   const [isPitchOpen, setIsPitchOpen] = useState(false);
   const [isVoiceOpen, setIsVoiceOpen] = useState(false);
 
@@ -26,63 +28,62 @@ const AppContent = () => {
   }, []);
 
   return (
-    <div className="page-wrapper">
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar onOpenPitch={() => setIsPitchOpen(true)} />
 
-      <main className="main-content">
-        {role === 'customer' && <CustomerHome />}
-        {role === 'worker'   && <WorkerDashboard />}
-        {role === 'admin'    && <FederationDashboard />}
+      <main style={{ flex: 1 }}>
+        <DeviceFrame isMobile={isMobileView}>
+          {role === 'customer' && <CustomerHome />}
+          {role === 'worker' && <WorkerDashboard />}
+          {role === 'admin' && <FederationDashboard />}
+        </DeviceFrame>
       </main>
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="footer-inner">
-          <div className="footer-grid">
-            <div className="footer-brand">
-              <div className="brand-name">🤝 SahakarSeva</div>
-              <p>
-                {language === 'hi'
-                  ? 'सहकारिता मंत्रालय एवं एनसीसीटी द्वारा समर्थित। सत्यापित सहकारी कामगारों के लिए भारत का विश्वसनीय सेवा मंच।'
-                  : 'Supported by the Ministry of Cooperation & NCCT. India\'s trusted cooperative service platform for verified skilled workers.'}
-              </p>
+      {/* Official Government Footer */}
+      <footer
+        className="no-print"
+        style={{
+          background: 'var(--navy-dark)',
+          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+          padding: '24px 20px',
+          fontSize: '13px',
+          color: 'rgba(255,255,255,0.6)'
+        }}
+      >
+        <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
+          <div>
+            <div style={{ fontWeight: 700, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span>🇮🇳</span> {t('footerTitle')}
             </div>
-            <div className="footer-col">
-              <h4>{language === 'hi' ? 'त्वरित लिंक' : 'Quick Links'}</h4>
-              <ul>
-                <li>{language === 'hi' ? 'सेवाएं' : 'Services'}</li>
-                <li>{language === 'hi' ? 'बुकिंग इतिहास' : 'Booking History'}</li>
-                <li>{language === 'hi' ? 'सहकारी समितियां' : 'Cooperative Societies'}</li>
-                <li>{language === 'hi' ? 'शिकायत निवारण' : 'Grievance Portal'}</li>
-              </ul>
-            </div>
-            <div className="footer-col">
-              <h4>{language === 'hi' ? 'संपर्क करें' : 'Contact'}</h4>
-              <ul>
-                <li>📞 1800-111-SEVA</li>
-                <li>✉ help@sahakarseva.gov.in</li>
-                <li>{language === 'hi' ? '🏛 सहकारिता मंत्रालय' : '🏛 Ministry of Cooperation'}</li>
-                <li>SIH 2026 • Problem #26089</li>
-              </ul>
+            <div style={{ fontSize: '11px', marginTop: '3px' }}>
+              {t('footerProblem')}
             </div>
           </div>
-          <div className="footer-bottom">
-            <span>© 2026 SahakarSeva • {language === 'hi' ? 'भारत सरकार' : 'Government of India'} Initiative</span>
-            <span>{language === 'hi' ? 'सहकार से समृद्धि' : '"Sahakar se Samriddhi"'}</span>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '12px' }}>
+            <span>{t('footerTheme')}</span>
+            <span style={{ color: '#FFB74D' }}>{t('footerTagline')}</span>
           </div>
         </div>
       </footer>
 
+      {/* Floating Low-Bandwidth / Rural Gram Panchayat Indicator */}
       <OfflineModeIndicator />
 
+      {/* SIH Hackathon Pitch & System Architecture Modal */}
       <HackathonPitchModal
         isOpen={isPitchOpen}
         onClose={() => setIsPitchOpen(false)}
       />
 
+      {/* Voice Booking Assistant */}
       <VoiceBookingAssistant
         isOpen={isVoiceOpen}
         onClose={() => setIsVoiceOpen(false)}
+        onSelectService={(serviceId) => {
+          setIsVoiceOpen(false);
+          // Customer portal will handle via its own state
+        }}
       />
 
       <Toast />

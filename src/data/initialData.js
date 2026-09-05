@@ -1,4 +1,4 @@
-// Master dataset for SahakarSeva Cooperative Gig Platform
+// Master dataset for ShramSetu Cooperative Gig Platform
 // Aligned with Ministry of Cooperation & NCCT (National Council for Cooperative Training)
 
 export const COOPERATIVE_SOCIETIES = [

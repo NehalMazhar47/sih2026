@@ -1,65 +1,147 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { usePlatform } from '../../context/PlatformContext';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, TrendingDown, HeartHandshake, CheckCircle2, XCircle, Info } from 'lucide-react';
 
-export const PriceBreakdown = () => {
-  const { language } = usePlatform();
-  const isHi = language === 'hi';
+export const PriceBreakdown = ({ amount = 450, serviceName = "Electrical Inspection & Repair" }) => {
+  const { t } = usePlatform();
+  const [showComparison, setShowComparison] = useState(true);
 
-  const ROWS = [
-    { label_en: 'Platform (e.g. Urban Company)', label_hi: 'निजी प्लेटफॉर्म (जैसे अर्बन कंपनी)', worker: 65, welfare: 0, platform: 35, highlight: false },
-    { label_en: 'SahakarSeva (Cooperative)', label_hi: 'सहकारसेवा (सहकारी मंच)', worker: 88, welfare: 7, platform: 5, highlight: true },
-  ];
+  // Cooperative Fair Share Model
+  const workerWage = Math.round(amount * 0.88);
+  const welfareCorpus = Math.round(amount * 0.07);
+  const ncctPlatformShare = amount - workerWage - welfareCorpus;
+
+  // Private Aggregator Model (e.g. 30% commission, 0% welfare)
+  const privateCommission = Math.round(amount * 0.30);
+  const privateWorkerGets = amount - privateCommission;
 
   return (
-    <div className="card">
-      <div className="flex-between flex-gap-md" style={{ marginBottom: 'var(--sp-md)', flexWrap: 'wrap' }}>
+    <div className="glass-panel" style={{ padding: '24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
         <div>
-          <h3 style={{ fontFamily: 'var(--font-head)', fontSize: 17, fontWeight: 700, color: 'var(--navy)' }}>
-            {isHi ? 'पारदर्शी भुगतान मॉडल की तुलना' : 'Transparent Payment Model Comparison'}
-          </h3>
-          <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>
-            {isHi ? '₹500 की सेवा पर कामगार को कितना मिलता है?' : 'How much does the worker receive on a ₹500 service?'}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <ShieldCheck size={22} color="#10b981" />
+            <h3 style={{ fontSize: '18px' }}>{t('fairWageGuarantee')}</h3>
+          </div>
+          <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
+            {t('fairWageSub')}
           </p>
         </div>
-        <span className="badge badge-green"><ShieldCheck size={11} /> {isHi ? 'NCCT प्रमाणित मॉडल' : 'NCCT Approved Model'}</span>
+
+        <button
+          onClick={() => setShowComparison(!showComparison)}
+          className="btn-secondary"
+          style={{ fontSize: '12px', padding: '6px 14px' }}
+        >
+          {showComparison ? t('hideComparison') : t('showComparison')}
+        </button>
       </div>
 
-      {ROWS.map((r, i) => (
-        <div key={i} style={{
-          border: `2px solid ${r.highlight ? 'var(--green)' : 'var(--border)'}`,
-          borderRadius: 'var(--r-lg)',
-          padding: 'var(--sp-md)',
-          marginBottom: i === 0 ? 12 : 0,
-          background: r.highlight ? 'var(--green-pale)' : 'var(--bg)'
-        }}>
-          <div style={{ fontWeight: 700, fontSize: 14, color: r.highlight ? 'var(--green)' : 'var(--text-muted)', marginBottom: 12 }}>
-            {isHi ? r.label_hi : r.label_en}
-          </div>
+      {/* Visual Fair-Wage Bar */}
+      <div style={{ marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '6px' }}>
+          <span style={{ fontWeight: 600, color: '#34d399' }}>{t('barWorker')}</span>
+          <span style={{ color: '#f48c06', fontWeight: 600 }}>{t('barWelfare')}</span>
+          <span style={{ color: '#60a5fa', fontWeight: 600 }}>{t('barNcct')}</span>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            height: '14px',
+            borderRadius: '999px',
+            overflow: 'hidden',
+            boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.4)'
+          }}
+        >
+          <div style={{ width: '88%', background: 'linear-gradient(90deg, #059669, #10b981)' }} title="Worker Wage: 88%" />
+          <div style={{ width: '7%', background: 'linear-gradient(90deg, #d97706, #f59e0b)' }} title="Welfare Pool: 7%" />
+          <div style={{ width: '5%', background: 'linear-gradient(90deg, #2563eb, #3b82f6)' }} title="NCCT / Cloud: 5%" />
+        </div>
+      </div>
 
-          {[
-            { label_en: `Worker (${r.worker}%)`, label_hi: `कामगार (${r.worker}%)`, pct: r.worker, amount: Math.round(500 * r.worker / 100), color: 'var(--green)' },
-            { label_en: `Welfare (${r.welfare}%)`, label_hi: `कल्याण (${r.welfare}%)`, pct: r.welfare, amount: Math.round(500 * r.welfare / 100), color: 'var(--amber)' },
-            { label_en: `Platform (${r.platform}%)`, label_hi: `मंच (${r.platform}%)`, pct: r.platform, amount: Math.round(500 * r.platform / 100), color: r.highlight ? 'var(--navy)' : 'var(--sos)' },
-          ].map((bar, j) => (
-            <div key={j} className="split-bar-row" style={{ marginBottom: j < 2 ? 10 : 0 }}>
-              <div className="split-bar-label" style={{ fontSize: 13, color: 'var(--text)' }}>{isHi ? bar.label_hi : bar.label_en}</div>
-              <div className="split-bar-track">
-                <div className="split-bar-fill" style={{ width: `${bar.pct}%`, background: bar.color }} />
-              </div>
-              <div className="split-bar-pct" style={{ color: bar.color, fontSize: 14, fontWeight: 800, minWidth: 55, textAlign: 'right' }}>
-                ₹{bar.amount}
+      {/* Breakdown Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', marginBottom: '24px' }}>
+        <div style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', padding: '14px', borderRadius: '12px' }}>
+          <div style={{ fontSize: '11px', color: '#34d399', fontWeight: 700, textTransform: 'uppercase' }}>{t('cardWorkerTitle')}</div>
+          <div style={{ fontSize: '22px', fontWeight: 800, color: '#ffffff', margin: '4px 0' }}>₹{workerWage}</div>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{t('cardWorkerSub')}</div>
+        </div>
+
+        <div style={{ background: 'rgba(244,140,6,0.1)', border: '1px solid rgba(244,140,6,0.3)', padding: '14px', borderRadius: '12px' }}>
+          <div style={{ fontSize: '11px', color: 'var(--saffron-light)', fontWeight: 700, textTransform: 'uppercase' }}>{t('cardWelfareTitle')}</div>
+          <div style={{ fontSize: '22px', fontWeight: 800, color: '#ffffff', margin: '4px 0' }}>₹{welfareCorpus}</div>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{t('cardWelfareSub')}</div>
+        </div>
+
+        <div style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.3)', padding: '14px', borderRadius: '12px' }}>
+          <div style={{ fontSize: '11px', color: '#93c5fd', fontWeight: 700, textTransform: 'uppercase' }}>{t('cardNcctTitle')}</div>
+          <div style={{ fontSize: '22px', fontWeight: 800, color: '#ffffff', margin: '4px 0' }}>₹{ncctPlatformShare}</div>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{t('cardNcctSub')}</div>
+        </div>
+      </div>
+
+      {/* Comparison Grid (ShramSetu vs Private Giants) */}
+      {showComparison && (
+        <div className="comparison-grid">
+          <div className="coop-card-highlight">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+              <span style={{ fontSize: '18px' }}>🤝</span>
+              <div>
+                <div style={{ fontWeight: 800, fontSize: '15px', color: '#34d399' }}>{t('coopTitle')}</div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{t('coopSub')}</div>
               </div>
             </div>
-          ))}
-        </div>
-      ))}
 
-      <div style={{ marginTop: 'var(--sp-md)', fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6 }}>
-        <strong style={{ color: 'var(--green)' }}>SahakarSeva</strong> {isHi
-          ? 'में ₹500 की सेवा पर कामगार को ₹440 मिलता है — जबकि निजी प्लेटफॉर्म पर केवल ₹325 मिलता।'
-          : 'gives ₹440 to the worker on a ₹500 service — while private platforms give only ₹325.'}
-      </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CheckCircle2 size={16} color="#10b981" />
+                <span>{t('coopPoint1')}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CheckCircle2 size={16} color="#10b981" />
+                <span>{t('coopPoint2')}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CheckCircle2 size={16} color="#10b981" />
+                <span>{t('coopPoint3')}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CheckCircle2 size={16} color="#10b981" />
+                <span>{t('coopPoint4')}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="private-card-dim">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+              <span style={{ fontSize: '18px' }}>🏢</span>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: '15px', color: '#fca5a5' }}>{t('privateTitle')}</div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{t('privateSub')}</div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', color: 'var(--text-muted)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <XCircle size={16} color="#ef4444" />
+                <span>{t('privatePoint1')}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <XCircle size={16} color="#ef4444" />
+                <span>{t('privatePoint2')}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <XCircle size={16} color="#ef4444" />
+                <span>{t('privatePoint3')}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <XCircle size={16} color="#ef4444" />
+                <span>{t('privatePoint4')}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

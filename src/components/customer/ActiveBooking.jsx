@@ -1,192 +1,437 @@
 import React, { useState } from 'react';
 import { usePlatform } from '../../context/PlatformContext';
-import { MapPin, Phone, Star, CheckCircle2, Clock, ShieldCheck, Receipt } from 'lucide-react';
-
-const STEPS = [
-  { en: 'Confirmed', hi: 'पुष्टि हुई' },
-  { en: 'En Route', hi: 'रास्ते में' },
-  { en: 'Arrived', hi: 'पहुंच गए' },
-  { en: 'Working', hi: 'काम चल रहा' },
-  { en: 'Completed', hi: 'पूर्ण' },
-];
+import { GeoTrackerMap } from './GeoTrackerMap';
+import {
+  ShieldCheck,
+  Clock,
+  KeyRound,
+  CheckCircle2,
+  FileText,
+  Printer,
+  Star,
+  Sparkles,
+  PhoneCall,
+  Volume2,
+  PlayCircle
+} from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 export const ActiveBooking = () => {
-  const { language, activeBooking, setActiveBooking } = usePlatform();
-  const isHi = language === 'hi';
-  const [currentStep, setCurrentStep] = useState(0);
-  const [rating, setRating] = useState(0);
-  const [hoverStar, setHoverStar] = useState(0);
-  const [showInvoice, setShowInvoice] = useState(false);
+  const { activeBooking, setActiveBooking, advanceBookingStatus, speakText, showToast } = usePlatform();
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [rating, setRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [isRated, setIsRated] = useState(false);
 
   if (!activeBooking) return null;
 
-  const isDone = currentStep === 4;
+  const steps = [
+    { key: 'assigned', label: 'Artisan Assigned' },
+    { key: 'en_route', label: 'En Route (GPS)' },
+    { key: 'arrived', label: 'Arrived & OTP Verified' },
+    { key: 'in_progress', label: 'Work In Progress' },
+    { key: 'completed', label: 'Job Completed' }
+  ];
+
+  const currentStepIndex = steps.findIndex(s => s.key === activeBooking.status);
+
+  const handleSpeakOtp = () => {
+    const spelledOtp = activeBooking.otp.split('').join(' ');
+    speakText(`Your security verification code is ${spelledOtp}. Please tell this to ${activeBooking.workerName} upon arrival.`);
+  };
+
+  const handleRateSubmit = (e) => {
+    e.preventDefault();
+    setIsRated(true);
+    confetti({ particleCount: 50 });
+    showToast("Feedback Submitted!", `Thank you for supporting cooperative worker ${activeBooking.workerName}!`, "success");
+  };
 
   return (
-    <div id="active-booking-modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(15,41,66,0.55)', zIndex: 500, display: 'flex', alignItems: 'flex-end', backdropFilter: 'blur(3px)' }}>
-      <div style={{ width: '100%', maxWidth: 600, margin: '0 auto', background: 'var(--card)', borderRadius: 'var(--r-xl) var(--r-xl) 0 0', maxHeight: '90vh', overflowY: 'auto' }}>
-
-        {/* Header */}
-        <div style={{ padding: 'var(--sp-lg) var(--sp-xl)', borderBottom: '1.5px solid var(--border)', background: isDone ? 'var(--green-pale)' : 'var(--saffron-pale)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ fontSize: 28 }}>{isDone ? '✅' : '🔔'}</div>
-            <div>
-              <div style={{ fontFamily: 'var(--font-head)', fontSize: 18, fontWeight: 800, color: isDone ? 'var(--green)' : 'var(--saffron)' }}>
-                {isDone
-                  ? (isHi ? 'सेवा पूर्ण हुई!' : 'Service Completed!')
-                  : (isHi ? 'बुकिंग सक्रिय है' : 'Booking Active')}
-              </div>
-              <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
-                {activeBooking.serviceName} • {isHi ? 'बुकिंग ID:' : 'ID:'} {activeBooking.id}
-              </div>
-            </div>
+    <div className="glass-panel" style={{ padding: '26px', marginBottom: '30px', border: '1.5px solid var(--saffron)' }}>
+      {/* Top Banner */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="badge badge-saffron">
+              {activeBooking.isEmergency ? '🚨 Emergency 15-Min SOS' : 'Active Cooperative Service'}
+            </span>
+            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+              Booking #{activeBooking.id}
+            </span>
           </div>
-          <button
-            onClick={() => setActiveBooking(null)}
-            style={{ background: 'none', border: 'none', fontSize: 22, color: 'var(--text-muted)', cursor: 'pointer', padding: 4 }}
-            title="Minimize"
-          >
-            ✕
-          </button>
+          <h2 style={{ fontSize: '22px', marginTop: '4px' }}>{activeBooking.serviceName}</h2>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+            Location: {activeBooking.address}
+          </p>
         </div>
 
-        <div style={{ padding: 'var(--sp-lg) var(--sp-xl)' }}>
-          {/* Status stepper */}
-          <div style={{ display: 'flex', gap: 0, marginBottom: 'var(--sp-xl)' }}>
-            {STEPS.map((s, i) => (
-              <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
-                {/* Connector line */}
-                {i < STEPS.length - 1 && (
-                  <div style={{
-                    position: 'absolute',
-                    top: 15,
-                    left: '50%',
-                    width: '100%',
-                    height: 2,
-                    background: i < currentStep ? 'var(--green)' : 'var(--border)',
-                    zIndex: 1,
-                    transition: 'background 0.4s ease'
-                  }} />
-                )}
-                {/* Dot */}
-                <div style={{
-                  width: 32, height: 32, borderRadius: '50%', zIndex: 2,
-                  background: i < currentStep ? 'var(--green)' : i === currentStep ? 'var(--saffron)' : 'var(--bg)',
-                  border: `2.5px solid ${i < currentStep ? 'var(--green)' : i === currentStep ? 'var(--saffron)' : 'var(--border)'}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: i <= currentStep ? 'white' : 'var(--text-muted)',
-                  fontSize: i < currentStep ? 16 : 12,
-                  fontWeight: 700,
-                  transition: 'all 0.3s ease',
-                  boxShadow: i === currentStep ? '0 0 0 4px rgba(230,81,0,0.15)' : 'none'
-                }}>
-                  {i < currentStep ? '✓' : i + 1}
-                </div>
-                <div style={{ fontSize: 10, fontWeight: 600, marginTop: 6, textAlign: 'center', color: i <= currentStep ? 'var(--text)' : 'var(--text-muted)', lineHeight: 1.2 }}>
-                  {isHi ? s.hi : s.en}
-                </div>
-              </div>
-            ))}
+        {/* Big OTP Card */}
+        <div
+          style={{
+            background: 'linear-gradient(135deg, rgba(244,140,6,0.18) 0%, rgba(10,24,48,0.9) 100%)',
+            border: '2px dashed var(--saffron)',
+            borderRadius: '16px',
+            padding: '12px 20px',
+            textAlign: 'center',
+            boxShadow: '0 4px 18px rgba(244,140,6,0.2)'
+          }}
+        >
+          <div style={{ fontSize: '11px', color: 'var(--saffron-light)', fontWeight: 700, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '5px', justifyContent: 'center' }}>
+            <KeyRound size={13} /> Security Arrival OTP
           </div>
-
-          {/* Worker card */}
-          <div className="card" style={{ marginBottom: 'var(--sp-md)', padding: 'var(--sp-md)' }}>
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-              <img src={activeBooking.workerAvatar} alt={activeBooking.workerName}
-                style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover', border: '2.5px solid var(--border)' }}
-                onError={e => { e.target.style.display = 'none'; }}
-              />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 700, fontSize: 16, color: 'var(--navy)' }}>{activeBooking.workerName}</div>
-                <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>{activeBooking.societyName}</div>
-                <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
-                  <span className="badge badge-verified">✓ {isHi ? 'सत्यापित' : 'Verified'}</span>
-                </div>
-              </div>
-              {!isDone && (
-                <div style={{ display: 'flex', flex: 'column', gap: 8 }}>
-                  <button className="btn btn-ghost btn-icon btn-sm" title="Call">
-                    <Phone size={16} color="var(--green)" />
-                  </button>
-                </div>
-              )}
-            </div>
-            {!isDone && (
-              <div style={{ marginTop: 12, padding: '10px var(--sp-md)', background: 'var(--bg)', borderRadius: 'var(--r-md)', fontSize: 14 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>{isHi ? 'OTP (आगमन पर दें)' : 'OTP (share on arrival)'}</span>
-                  <strong style={{ fontSize: 18, letterSpacing: 4, color: 'var(--saffron)' }}>{activeBooking.otp}</strong>
-                </div>
-              </div>
-            )}
+          <div style={{ fontSize: '28px', fontWeight: 800, letterSpacing: '4px', color: '#ffffff', margin: '4px 0' }}>
+            {activeBooking.otp}
           </div>
+          <button
+            onClick={handleSpeakOtp}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--text-muted)',
+              fontSize: '11px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              margin: '0 auto'
+            }}
+          >
+            <Volume2 size={12} color="#f48c06" /> Speak Code
+          </button>
+        </div>
+      </div>
 
-          {/* Simulate progress (demo) */}
-          {!isDone && (
+      {/* Progress Stepper */}
+      <div style={{ marginBottom: '26px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', position: 'relative' }}>
+          {steps.map((s, idx) => {
+            const isPassed = idx <= currentStepIndex;
+            const isCurrent = idx === currentStepIndex;
+            return (
+              <div
+                key={s.key}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  flex: 1,
+                  zIndex: 2,
+                  textAlign: 'center'
+                }}
+              >
+                <div
+                  style={{
+                    width: '34px',
+                    height: '34px',
+                    borderRadius: '50%',
+                    background: isPassed ? (s.key === 'completed' ? '#10b981' : '#f48c06') : '#1e293b',
+                    border: isCurrent ? '3px solid white' : '2px solid rgba(255,255,255,0.2)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontWeight: 700,
+                    fontSize: '12px',
+                    boxShadow: isCurrent ? '0 0 14px rgba(244,140,6,0.8)' : 'none',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  {isPassed ? <CheckCircle2 size={16} /> : idx + 1}
+                </div>
+                <div
+                  style={{
+                    fontSize: '11px',
+                    fontWeight: isCurrent ? 700 : 500,
+                    color: isPassed ? '#ffffff' : 'var(--text-muted)',
+                    marginTop: '8px'
+                  }}
+                >
+                  {s.label}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Interactive Simulation Action Bar for Evaluators */}
+      <div
+        style={{
+          background: 'rgba(5, 14, 32, 0.75)',
+          border: '1px solid rgba(255, 255, 255, 0.12)',
+          borderRadius: '14px',
+          padding: '12px 18px',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '10px'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <PlayCircle size={18} color="#06b6d4" />
+          <span style={{ fontSize: '13px', fontWeight: 600 }}>Interactive Demo Controls (Simulate Live Lifecycle):</span>
+        </div>
+
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {activeBooking.status === 'assigned' && (
             <button
-              className="btn btn-outline btn-full"
-              onClick={() => setCurrentStep(s => Math.min(s + 1, 4))}
+              id="simulate-en-route-btn"
+              onClick={() => advanceBookingStatus('en_route')}
+              className="btn-primary"
+              style={{ fontSize: '12px', padding: '6px 14px' }}
             >
-              {isHi ? 'अगले चरण का अनुकरण (Demo)' : 'Simulate Next Step (Demo)'}
+              1. Simulate Worker Departure (En Route)
             </button>
           )}
 
-          {/* Completed: Rating */}
-          {isDone && (
+          {activeBooking.status === 'en_route' && (
+            <button
+              id="simulate-arrived-btn"
+              onClick={() => advanceBookingStatus('arrived')}
+              className="btn-primary"
+              style={{ fontSize: '12px', padding: '6px 14px' }}
+            >
+              2. Simulate Arrival & Verify OTP ({activeBooking.otp})
+            </button>
+          )}
+
+          {activeBooking.status === 'arrived' && (
+            <button
+              id="simulate-start-work-btn"
+              onClick={() => advanceBookingStatus('in_progress')}
+              className="btn-emerald"
+              style={{ fontSize: '12px', padding: '6px 14px' }}
+            >
+              3. Begin Inspection & Work
+            </button>
+          )}
+
+          {activeBooking.status === 'in_progress' && (
+            <button
+              id="simulate-complete-work-btn"
+              onClick={() => advanceBookingStatus('completed')}
+              className="btn-emerald"
+              style={{ fontSize: '12px', padding: '6px 14px' }}
+            >
+              4. Complete Work & Disburse Living Wage
+            </button>
+          )}
+
+          {activeBooking.status === 'completed' && (
+            <button
+              id="view-invoice-btn"
+              onClick={() => setShowInvoiceModal(true)}
+              className="btn-primary"
+              style={{ fontSize: '12px', padding: '6px 14px' }}
+            >
+              <FileText size={14} /> View Digital Cooperative Invoice
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Embedded Map & Worker Telemetry */}
+      {activeBooking.status !== 'completed' && (
+        <div style={{ marginBottom: '20px' }}>
+          <GeoTrackerMap
+            workerName={activeBooking.workerName}
+            etaMinutes={activeBooking.status === 'assigned' ? 15 : (activeBooking.status === 'en_route' ? 8 : 0)}
+            status={activeBooking.status}
+          />
+        </div>
+      )}
+
+      {/* Rating & Review Section after Completion */}
+      {activeBooking.status === 'completed' && (
+        <div
+          style={{
+            background: 'rgba(16, 185, 129, 0.08)',
+            border: '1px solid rgba(16, 185, 129, 0.3)',
+            borderRadius: '16px',
+            padding: '20px',
+            marginBottom: '20px'
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
             <div>
-              <div className="card" style={{ marginBottom: 'var(--sp-md)', textAlign: 'center' }}>
-                <div style={{ fontFamily: 'var(--font-head)', fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 'var(--sp-md)' }}>
-                  {isHi ? 'कामगार को रेट करें' : 'Rate Your Worker'}
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 'var(--sp-md)' }}>
-                  {[1,2,3,4,5].map(s => (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CheckCircle2 size={20} color="#10b981" />
+                <h3 style={{ fontSize: '18px' }}>Job Successfully Completed!</h3>
+              </div>
+              <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
+                Living wage of <b>₹{activeBooking.workerWage}</b> (88%) has been instantly transferred to {activeBooking.workerName}'s bank account.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowInvoiceModal(true)}
+              className="btn-secondary"
+              style={{ fontSize: '13px' }}
+            >
+              <FileText size={15} /> Download Receipt
+            </button>
+          </div>
+
+          {!isRated ? (
+            <form onSubmit={handleRateSubmit} style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '10px' }}>
+                <span style={{ fontSize: '13px', fontWeight: 600 }}>Rate Artisan:</span>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  {[1, 2, 3, 4, 5].map((star) => (
                     <button
-                      key={s}
-                      onClick={() => setRating(s)}
-                      onMouseEnter={() => setHoverStar(s)}
-                      onMouseLeave={() => setHoverStar(0)}
+                      type="button"
+                      key={star}
+                      onClick={() => setRating(star)}
                       style={{
-                        background: 'none', border: 'none', cursor: 'pointer',
-                        fontSize: 36, color: s <= (hoverStar || rating) ? '#F59E0B' : 'var(--border)',
-                        transition: 'color 0.1s ease'
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontSize: '22px',
+                        color: star <= rating ? '#ffba08' : '#475569'
                       }}
-                    >★</button>
+                    >
+                      ★
+                    </button>
                   ))}
                 </div>
-                {rating > 0 && (
-                  <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 'var(--sp-md)' }}>
-                    {rating === 5 ? (isHi ? 'उत्कृष्ट! शुक्रिया।' : 'Excellent! Thank you.') :
-                     rating === 4 ? (isHi ? 'बहुत अच्छा' : 'Very Good') :
-                     rating === 3 ? (isHi ? 'ठीक था' : 'Satisfactory') :
-                     (isHi ? 'सुधार की ज़रूरत है' : 'Needs Improvement')}
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder={t('shareFeedback')}
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  style={{ flex: 1 }}
+                />
+                <button type="submit" className="btn-primary" style={{ padding: '8px 18px', fontSize: '13px' }}>
+                  {t('submitRating')}
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div style={{ marginTop: '12px', fontSize: '13px', color: '#34d399', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <CheckCircle2 size={16} /> {language === 'hi' ? `प्रतिक्रिया कामगार ${activeBooking.workerName} के NCCT डिजिटल कौशल लेज़र में दर्ज की गई।` : `Feedback recorded on ${activeBooking.workerName}'s NCCT Digital Skill Ledger.`}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Digital Cooperative Invoice Modal */}
+      {showInvoiceModal && (
+        <div className="modal-backdrop">
+          <div className="modal-content" style={{ maxWidth: '620px', background: '#ffffff', color: '#0f172a' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #e2e8f0', paddingBottom: '14px', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ width: '38px', height: '38px', background: '#091a32', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <ShieldCheck size={22} color="#f48c06" />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '18px', color: '#091a32' }}>
+                    {language === 'hi' ? "श्रमसेतु डिजिटल कर बीजक (बिल)" : "ShramSetu Tax Invoice"}
+                  </h3>
+                  <div style={{ fontSize: '11px', color: '#64748b' }}>
+                    {language === 'hi' ? "सहकारिता मंत्रालय • NCCT प्रमाणित" : "Ministry of Cooperation • NCCT Certified"}
                   </div>
-                )}
-                <button className="btn btn-green btn-full" onClick={() => { setShowInvoice(true); setActiveBooking(null); }}>
-                  {isHi ? 'डिजिटल रसीद देखें' : 'View Digital Invoice'} <Receipt size={15} />
+                </div>
+              </div>
+              <button
+                onClick={() => setShowInvoiceModal(false)}
+                style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontSize: '12px', color: '#334155', marginBottom: '16px' }}>
+              <div>
+                <div><b>Invoice No:</b> SS-INV-{activeBooking.id}</div>
+                <div><b>Date:</b> {new Date().toLocaleDateString()}</div>
+                <div><b>Society:</b> {activeBooking.societyName}</div>
+                <div><b>Reg No:</b> MSCS/ND/2021/892</div>
+              </div>
+              <div>
+                <div><b>Customer:</b> Resident Household</div>
+                <div><b>Address:</b> {activeBooking.address}</div>
+                <div><b>Artisan:</b> {activeBooking.workerName}</div>
+                <div><b>NCCT ID:</b> {activeBooking.ncctCertId}</div>
+              </div>
+            </div>
+
+            {/* Line Items Table */}
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '18px', fontSize: '13px' }}>
+              <thead>
+                <tr style={{ background: '#f8fafc', borderBottom: '1px solid #cbd5e1', textAlign: 'left' }}>
+                  <th style={{ padding: '8px' }}>Description</th>
+                  <th style={{ padding: '8px', textAlign: 'right' }}>Amount (INR)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                  <td style={{ padding: '8px' }}>
+                    <b>{activeBooking.serviceName}</b>
+                    <div style={{ fontSize: '11px', color: '#64748b' }}>Standard visiting and service rate</div>
+                  </td>
+                  <td style={{ padding: '8px', textAlign: 'right', fontWeight: 600 }}>₹{activeBooking.amount}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* Transparent Financial Allocation Box */}
+            <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '10px', padding: '12px', marginBottom: '18px', fontSize: '12px', color: '#166534' }}>
+              <div style={{ fontWeight: 700, marginBottom: '6px' }}>Cooperative Fair-Wage Disbursal Audit:</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                <span>• Direct Living Wage to Artisan (88%):</span>
+                <b>₹{activeBooking.workerWage}</b>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                <span>• Worker Social Security & Pension Pool (7%):</span>
+                <b>₹{activeBooking.welfareContribution}</b>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>• NCCT Skill Training & Cloud Platform (5%):</span>
+                <b>₹{activeBooking.platformNcctShare}</b>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '10px', borderTop: '1px solid #e2e8f0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {/* QR Code placeholder for UPI */}
+                <div style={{ width: '50px', height: '50px', background: '#091a32', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '10px', textAlign: 'center' }}>
+                  UPI QR Verified
+                </div>
+                <div style={{ fontSize: '11px', color: '#64748b' }}>
+                  Digitally signed by<br />Cooperative Settlement Engine
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button
+                  onClick={() => window.print()}
+                  className="btn-primary"
+                  style={{ fontSize: '13px', padding: '8px 16px', background: '#091a32', color: 'white' }}
+                >
+                  <Printer size={14} /> Print Receipt
+                </button>
+                <button
+                  onClick={() => {
+                    setShowInvoiceModal(false);
+                    showToast("Receipt Saved", "PDF invoice downloaded to device.", "success");
+                  }}
+                  className="btn-emerald"
+                  style={{ fontSize: '13px', padding: '8px 16px' }}
+                >
+                  Download PDF
                 </button>
               </div>
             </div>
-          )}
-
-          {/* Payment summary */}
-          <div style={{ background: 'var(--green-pale)', border: '1.5px solid #A7DFC4', borderRadius: 'var(--r-lg)', padding: 'var(--sp-md)', fontSize: 13 }}>
-            <div style={{ fontWeight: 700, color: 'var(--green)', marginBottom: 10 }}>
-              💰 {isHi ? 'भुगतान का पारदर्शी विवरण' : 'Transparent Payment Breakdown'}
-            </div>
-            {[
-              { label: isHi ? 'कामगार को (88%)' : 'Worker direct (88%)', value: `₹${activeBooking.workerWage}`, color: 'var(--green)' },
-              { label: isHi ? 'कल्याण व पेंशन (7%)' : 'Welfare & Pension (7%)', value: `₹${Math.round(activeBooking.welfareContribution)}`, color: 'var(--amber)' },
-              { label: isHi ? 'NCCT व मंच (5%)' : 'NCCT & Platform (5%)', value: `₹${activeBooking.platformNcctShare}`, color: 'var(--navy)' },
-              { label: isHi ? 'कुल राशि' : 'Total', value: `₹${activeBooking.amount}`, color: 'var(--text)', bold: true },
-            ].map((r, i) => (
-              <div key={i} className="flex-between" style={{ paddingBottom: i < 3 ? 8 : 0, borderBottom: i < 3 ? '1px solid #A7DFC4' : 'none', marginBottom: i < 3 ? 8 : 0 }}>
-                <span style={{ color: 'var(--text-muted)' }}>{r.label}</span>
-                <span style={{ fontWeight: r.bold ? 800 : 700, color: r.color }}>{r.value}</span>
-              </div>
-            ))}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -17,13 +17,13 @@ export const PlatformProvider = ({ children }) => {
   // Navigation & Multi-Role Persona
   const [role, setRole] = useState('customer'); // 'customer' | 'worker' | 'admin'
   const [language, setLanguageState] = useState(() => {
-    return localStorage.getItem('sahakar_language') || 'en';
+    return localStorage.getItem('shramsetu_language') || 'en';
   });
 
   const setLanguage = (lang) => {
     setLanguageState(lang);
     try {
-      localStorage.setItem('sahakar_language', lang);
+      localStorage.setItem('shramsetu_language', lang);
     } catch (e) {}
   };
 
@@ -238,12 +238,6 @@ export const PlatformProvider = ({ children }) => {
     speakText(`AI workforce rebalance executed. ${count} workers mobilized.`);
   };
 
-  // triggerToast — simple alias used by rebuilt components
-  const triggerToast = (message) => {
-    setToastMessage(typeof message === 'string' ? message : message?.message || String(message));
-    setTimeout(() => setToastMessage(null), 3000);
-  };
-
   return (
     <PlatformContext.Provider
       value={{
@@ -278,9 +272,7 @@ export const PlatformProvider = ({ children }) => {
         triggerAiReallocation,
         speakText,
         showToast,
-        triggerToast,
-        toastMessage,
-        setToastMessage,
+        toastMessage
       }}
     >
       {children}

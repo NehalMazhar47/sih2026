@@ -42,7 +42,7 @@ export const HackathonPitchModal = ({ isOpen, onClose }) => {
                 </span>
               </div>
               <h2 style={{ fontSize: '20px', marginTop: '4px' }}>
-                {isHi ? "सहकारसेवा: सहकारी गिग सेवा डिजिटल मंच" : "SahakarSeva: Cooperative Gig Services Platform"}
+                {isHi ? "श्रमसेतु: सहकारी गिग सेवा डिजिटल मंच" : "ShramSetu: Cooperative Gig Services Platform"}
               </h2>
             </div>
           </div>
@@ -102,7 +102,7 @@ export const HackathonPitchModal = ({ isOpen, onClose }) => {
 
             <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)', borderRadius: '12px', padding: '16px' }}>
               <div style={{ fontWeight: 700, color: '#34d399', marginBottom: '4px' }}>
-                {isHi ? "सहकारसेवा का अभूतपूर्व समाधान:" : "The SahakarSeva Breakthrough:"}
+                {isHi ? "श्रमसेतु का अभूतपूर्व समाधान:" : "The ShramSetu Breakthrough:"}
               </div>
               {isHi ? "सहकारी स्वामित्व वाला डिजिटल सेवा मंच जो व्यावसायिक आधुनिक तकनीक को सहकारी मूल्यों से जोड़ता है:" : "A cooperative-federated digital service marketplace that couples commercial-grade UX with cooperative governance:"}
               <ul style={{ paddingLeft: '20px', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -182,7 +182,7 @@ export const HackathonPitchModal = ({ isOpen, onClose }) => {
               <thead>
                 <tr style={{ background: 'rgba(255,255,255,0.06)', textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                   <th style={{ padding: '10px' }}>{isHi ? "मापदंड / पहलू" : "Feature / Dimension"}</th>
-                  <th style={{ padding: '10px', color: '#34d399' }}>{isHi ? "सहकारसेवा (सहकारी मंच)" : "SahakarSeva (Cooperative)"}</th>
+                  <th style={{ padding: '10px', color: '#34d399' }}>{isHi ? "श्रमसेतु (सहकारी मंच)" : "ShramSetu (Cooperative)"}</th>
                   <th style={{ padding: '10px', color: '#f87171' }}>{isHi ? "निजी कंपनियाँ (जैसे अर्बन कंपनी)" : "Private Giants (e.g. Urban Company)"}</th>
                 </tr>
               </thead>
@@ -226,9 +226,9 @@ export const HackathonPitchModal = ({ isOpen, onClose }) => {
               <b>{isHi ? "“सहकार से समृद्धि” (Prosperity through Cooperation):" : "\"Sahakar se Samriddhi\" (Prosperity through Cooperation):"}</b>
               <br />
               {isHi ? (
-                <>सहकारसेवा श्रम सहकारी संघों को आधुनिक तकनीक से जोड़कर उन्हें प्रतिस्पर्धी आधुनिक डिजिटल उद्यम में रूपांतरित करता है, जिससे कामगारों के अधिकारों और गरिमा की पूर्ण रक्षा होती है।</>
+                <>श्रमसेतु श्रम सहकारी संघों को आधुनिक तकनीक से जोड़कर उन्हें प्रतिस्पर्धी आधुनिक डिजिटल उद्यम में रूपांतरित करता है, जिससे कामगारों के अधिकारों और गरिमा की पूर्ण रक्षा होती है।</>
               ) : (
-                <>SahakarSeva directly fulfills the national agenda of computerizing and digitally empowering Labour Cooperative Federations, transforming them from passive registries into competitive modern gig service enterprises capable of rivaling venture capital platforms while protecting artisan rights.</>
+                <>ShramSetu directly fulfills the national agenda of computerizing and digitally empowering Labour Cooperative Federations, transforming them from passive registries into competitive modern gig service enterprises capable of rivaling venture capital platforms while protecting artisan rights.</>
               )}
             </div>
 

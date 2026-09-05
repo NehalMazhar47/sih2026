@@ -5,7 +5,7 @@ import { ActiveBooking } from './ActiveBooking';
 import { PriceBreakdown } from './PriceBreakdown';
 import {
   Search, Zap, Star, MapPin, Clock, ShieldCheck,
-  ArrowRight, Mic, ChevronRight, Users, Award, TrendingUp
+  ArrowRight, Mic, ChevronRight, Users, Award, TrendingUp, Phone
 } from 'lucide-react';
 
 const SERVICE_CATEGORIES = [
@@ -29,10 +29,11 @@ const HOW_IT_WORKS = [
   { en: 'Search & Select',  hi: 'खोजें व चुनें',      desc_en: 'Choose a service category and enter your location', desc_hi: 'सेवा चुनें और अपना पता दर्ज करें' },
   { en: 'Match & Book',     hi: 'मिलान व बुकिंग',     desc_en: 'See verified cooperative workers near you with fixed rates', desc_hi: 'निकटतम सत्यापित कारीगर देखें व निश्चित दर पर बुक करें' },
   { en: 'Track & Pay',      hi: 'ट्रैक करें व भुगतान', desc_en: 'Track in real-time. 88% goes directly to your worker via UPI', desc_hi: 'रीयल-टाइम ट्रैकिंग। 88% सीधे कामगार को UPI से' },
+  { en: 'Rate Service',     hi: 'रेटिंग दें',        desc_en: 'Rate your worker and support cooperative living wage', desc_hi: 'कारीगर को रेटिंग दें और सहकारी आजीविका का समर्थन करें' }
 ];
 
 export const CustomerHome = () => {
-  const { language, setRole, activeBooking, t, triggerToast, speakText } = usePlatform();
+  const { language, activeBooking, t, speakText } = usePlatform();
   const isHi = language === 'hi';
 
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -49,11 +50,23 @@ export const CustomerHome = () => {
     window.dispatchEvent(new CustomEvent('open-voice-assistant'));
   };
 
+  const handleSearchSubmit = () => {
+    if (!searchQuery.trim()) return;
+    const q = searchQuery.toLowerCase();
+    const found = SERVICE_CATEGORIES.find(c =>
+      c.label_en.toLowerCase().includes(q) ||
+      c.label_hi.includes(q) ||
+      c.id.includes(q) ||
+      c.desc_en.toLowerCase().includes(q)
+    );
+    handleCategorySelect(found || SERVICE_CATEGORIES[0]);
+  };
+
   return (
     <div>
       {/* ── Hero ────────────────────────────────────────────── */}
       <section className="hero">
-        <div className="hero-content">
+        <div className="container hero-content">
           <div className="hero-badge">
             <ShieldCheck size={13} />
             {isHi ? 'NCCT सत्यापित • सहकारिता मंत्रालय' : 'NCCT Verified • Ministry of Cooperation'}
@@ -63,49 +76,38 @@ export const CustomerHome = () => {
             {isHi ? (
               <>भारत का <span>सहकारी सेवा</span> डिजिटल मंच</>
             ) : (
-              <>India's Trusted <span>Cooperative</span> Services Platform</>
+              <>Trusted Services. <span>Fair Work.</span> Stronger Communities.</>
             )}
           </h1>
 
           <p className="hero-sub">
             {isHi
               ? 'NCCT प्रमाणित सहकारी कामगारों द्वारा घरेलू सेवाएं। निश्चित दरें, पारदर्शी भुगतान, सामाजिक सुरक्षा।'
-              : 'Home services by NCCT-certified cooperative workers. Fixed rates, transparent payments, worker welfare guaranteed.'}
+              : 'Book NCCT-certified cooperative workers for home and community services. Fixed rates, transparent payments, worker welfare guaranteed.'}
           </p>
 
           {/* Search bar */}
-          <div style={{ maxWidth: 600 }}>
-            <div className="search-box" style={{ background: 'white', padding: '8px 10px 8px 20px' }}>
+          <div style={{ maxWidth: 620 }}>
+            <div className="search-box">
               <Search size={18} color="var(--text-muted)" />
               <input
                 type="text"
                 placeholder={isHi ? 'प्लंबर, इलेक्ट्रीशियन, सफाई... खोजें' : 'Search electrician, plumber, cleaning...'}
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                style={{ fontSize: 16 }}
+                onKeyDown={e => { if (e.key === 'Enter') handleSearchSubmit(); }}
               />
               <button
                 className="btn btn-ghost btn-icon"
                 onClick={handleVoiceSearch}
                 title={isHi ? 'आवाज से खोजें' : 'Search by voice'}
-                style={{ background: 'transparent', border: 'none' }}
               >
                 <Mic size={18} color="var(--saffron)" />
               </button>
               <button
                 className="btn btn-primary"
-                onClick={() => {
-                  if (!searchQuery.trim()) return;
-                  const query = searchQuery.toLowerCase();
-                  const found = SERVICE_CATEGORIES.find(c =>
-                    c.label_en.toLowerCase().includes(query) ||
-                    c.label_hi.includes(query) ||
-                    c.id.includes(query) ||
-                    c.desc_en.toLowerCase().includes(query)
-                  );
-                  handleCategorySelect(found || SERVICE_CATEGORIES[0]);
-                }}
-                style={{ borderRadius: 'var(--r-full)', padding: '8px 20px' }}
+                onClick={handleSearchSubmit}
+                style={{ borderRadius: 'var(--r-full)', padding: '8px 22px' }}
               >
                 {isHi ? 'खोजें' : 'Search'}
               </button>
@@ -131,7 +133,6 @@ export const CustomerHome = () => {
                     fontSize: 13,
                     fontWeight: 600,
                     cursor: 'pointer',
-                    transition: 'all 0.15s ease',
                     backdropFilter: 'blur(4px)'
                   }}
                   onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.25)'; }}
@@ -174,18 +175,18 @@ export const CustomerHome = () => {
       )}
 
       {/* ── Trust Stats ────────────────────────────────────── */}
-      <section style={{ background: 'var(--navy)', padding: 'var(--sp-lg) 0' }}>
+      <section style={{ background: 'var(--primary-navy)', padding: 'var(--sp-lg) 0', color: 'white' }}>
         <div className="container">
-          <div className="trust-banner" style={{ border: 'none', borderRadius: 0, background: 'transparent', padding: 0, justifyContent: 'space-around' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, textAlign: 'center' }}>
             {[
               { value: '4.2L+', label: isHi ? 'सत्यापित कामगार' : 'Verified Workers' },
               { value: '28',    label: isHi ? 'राज्यों में उपस्थित' : 'States Covered' },
               { value: '88%',   label: isHi ? 'कामगार को प्रत्यक्ष' : 'Direct to Worker' },
               { value: '₹320+', label: isHi ? 'औसत घंटे की मज़दूरी' : 'Avg Hourly Wage' },
             ].map(s => (
-              <div key={s.value} className="trust-stat">
-                <div className="trust-stat-value">{s.value}</div>
-                <div className="trust-stat-label">{s.label}</div>
+              <div key={s.value}>
+                <div style={{ fontFamily: 'var(--font-head)', fontSize: 28, fontWeight: 800, color: '#FFB74D' }}>{s.value}</div>
+                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>{s.label}</div>
               </div>
             ))}
           </div>
@@ -229,8 +230,34 @@ export const CustomerHome = () => {
         </div>
       </section>
 
+      {/* ── Emergency Booking Banner ────────────────────────── */}
+      <section style={{ background: 'var(--saffron-pale)', borderTop: '1.5px solid #FDE68A', borderBottom: '1.5px solid #FDE68A', padding: 'var(--sp-lg) 0' }}>
+        <div className="container flex-between flex-gap-md" style={{ flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
+            <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'var(--saffron)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>
+              ⚡
+            </div>
+            <div>
+              <h3 style={{ fontFamily: 'var(--font-head)', fontSize: 18, fontWeight: 800, color: 'var(--navy)' }}>
+                {isHi ? '15-मिनट आपातकालीन सेवा चाहिए?' : 'Need Urgent Emergency Help Right Now?'}
+              </h3>
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>
+                {isHi ? 'निकटतम 24/7 आपातकालीन इलेक्ट्रीशियन या प्लंबर 15 मिनट में पहुंचेगा।' : 'Instant dispatch of nearest emergency electrician or plumber within 15 mins.'}
+              </p>
+            </div>
+          </div>
+          <button
+            className="btn btn-primary"
+            style={{ background: 'var(--saffron-dark)', borderColor: 'var(--saffron-dark)' }}
+            onClick={() => handleCategorySelect(SERVICE_CATEGORIES[0])}
+          >
+            <Phone size={15} /> {isHi ? 'आपातकालीन बुक करें' : 'Get Emergency Help'}
+          </button>
+        </div>
+      </section>
+
       {/* ── Wage Transparency ──────────────────────────────── */}
-      <section style={{ background: 'var(--bg-alt)', padding: 'var(--sp-xl) 0' }}>
+      <section className="section" style={{ background: 'var(--bg-alt)' }}>
         <div className="container">
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--sp-xl)', alignItems: 'center' }}>
             <div>
@@ -246,22 +273,22 @@ export const CustomerHome = () => {
                   ? 'प्राइवेट कंपनियां 30-35% कमीशन लेती हैं। हम सिर्फ 12% — बाकी सब कामगार की उचित मज़दूरी और सामाजिक सुरक्षा।'
                   : 'Private platforms take 30-35% commission. We retain only 12% — the rest is fair wages and worker welfare.'}
               </p>
-              <div className="wage-pct-row" style={{ marginTop: 'var(--sp-lg)' }}>
+              <div className="wage-pct-row">
                 <div className="wage-pct-block">
-                  <div className="wage-pct-number" style={{ color: 'var(--green)' }}>88%</div>
+                  <div className="wage-pct-number" style={{ color: 'var(--coop-green)' }}>88%</div>
                   <div className="wage-pct-label">{isHi ? 'कामगार को सीधा वेतन' : 'Direct Worker Wage'}</div>
                 </div>
                 <div className="wage-pct-block">
-                  <div className="wage-pct-number" style={{ color: 'var(--saffron)' }}>7%</div>
+                  <div className="wage-pct-number" style={{ color: 'var(--saffron-dark)' }}>7%</div>
                   <div className="wage-pct-label">{isHi ? 'कल्याण व पेंशन कोष' : 'Welfare & Pension'}</div>
                 </div>
                 <div className="wage-pct-block">
-                  <div className="wage-pct-number" style={{ color: 'var(--navy)' }}>5%</div>
+                  <div className="wage-pct-number" style={{ color: 'var(--primary-navy)' }}>5%</div>
                   <div className="wage-pct-label">{isHi ? 'NCCT प्रशिक्षण व मंच' : 'NCCT & Platform'}</div>
                 </div>
               </div>
               <button
-                className="btn btn-outline-saffron mt-lg"
+                className="btn btn-outline mt-lg"
                 onClick={() => setShowPriceBreakdown(!showPriceBreakdown)}
               >
                 {isHi ? 'भुगतान विवरण देखें' : 'See Payment Breakdown'} <ChevronRight size={15} />
@@ -271,7 +298,7 @@ export const CustomerHome = () => {
             {/* Comparison */}
             <div className="card">
               <h3 style={{ fontFamily: 'var(--font-head)', fontSize: 16, fontWeight: 700, color: 'var(--navy)', marginBottom: 'var(--sp-md)' }}>
-                {isHi ? 'सहकारसेवा बनाम निजी प्लेटफॉर्म' : 'SahakarSeva vs Private Platforms'}
+                {isHi ? 'श्रमसेतु बनाम निजी प्लेटफॉर्म' : 'ShramSetu vs Private Platforms'}
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {[
@@ -291,15 +318,10 @@ export const CustomerHome = () => {
                     fontSize: 13
                   }}>
                     <span style={{ color: 'var(--text-muted)' }}>{r.label}</span>
-                    <span style={{ fontWeight: 700, color: 'var(--green)', textAlign: 'center' }}>{r.us}</span>
-                    <span style={{ fontWeight: 600, color: r.good ? '#DC2626' : 'var(--green)', textAlign: 'center' }}>{r.them}</span>
+                    <span style={{ fontWeight: 700, color: 'var(--coop-green)', textAlign: 'center' }}>{r.us}</span>
+                    <span style={{ fontWeight: 600, color: r.good ? '#DC2626' : 'var(--coop-green)', textAlign: 'center' }}>{r.them}</span>
                   </div>
                 ))}
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: 12, marginTop: 4, fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                <span></span>
-                <span style={{ color: 'var(--green)' }}>SahakarSeva</span>
-                <span style={{ color: 'var(--sos)' }}>Others</span>
               </div>
             </div>
           </div>
@@ -321,14 +343,13 @@ export const CustomerHome = () => {
             </button>
           </div>
 
-          <div className="grid-3" style={{ gap: 'var(--sp-md)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--sp-md)' }}>
             {FEATURED_WORKERS.map(w => (
               <div key={w.id} className="card card-hover" style={{ padding: 'var(--sp-md)' }}>
                 <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                   <img
                     src={w.avatar}
                     alt={w.name}
-                    className="worker-avatar"
                     style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: '50%', border: '2.5px solid var(--border)', flexShrink: 0 }}
                     onError={e => { e.target.style.display = 'none'; }}
                   />
@@ -354,7 +375,7 @@ export const CustomerHome = () => {
                     </div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontFamily: 'var(--font-head)', fontWeight: 800, fontSize: 16, color: 'var(--saffron)' }}>₹{w.rate}</div>
+                    <div style={{ fontFamily: 'var(--font-head)', fontWeight: 800, fontSize: 16, color: 'var(--saffron-dark)' }}>₹{w.rate}</div>
                     <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{isHi ? 'प्रति घंटा' : 'per hour'}</div>
                   </div>
                 </div>
@@ -376,71 +397,29 @@ export const CustomerHome = () => {
       </section>
 
       {/* ── How It Works ──────────────────────────────────── */}
-      <section style={{ background: 'var(--navy)', padding: 'var(--sp-2xl) 0' }}>
+      <section style={{ background: 'var(--primary-navy)', padding: 'var(--sp-2xl) 0', color: 'white' }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: 'var(--sp-xl)' }}>
-            <h2 style={{ fontFamily: 'var(--font-head)', fontSize: 26, fontWeight: 800, color: 'white' }}>
-              {isHi ? 'सेवा कैसे बुक करें?' : 'How It Works'}
+            <h2 style={{ fontFamily: 'var(--font-head)', fontSize: 26, fontWeight: 800 }}>
+              {isHi ? 'श्रमसेतु कैसे काम करता है?' : 'How ShramSetu Works'}
             </h2>
-            <p style={{ color: 'rgba(255,255,255,0.65)', marginTop: 8, fontSize: 15 }}>
-              {isHi ? 'सिर्फ 3 आसान चरणों में' : 'Just 3 simple steps'}
+            <p style={{ color: 'rgba(255,255,255,0.75)', marginTop: 8, fontSize: 15 }}>
+              {isHi ? 'सिर्फ 4 आसान चरणों में' : 'Just 4 simple steps'}
             </p>
           </div>
           <div className="how-steps">
             {HOW_IT_WORKS.map((s, i) => (
               <div key={i} className="how-step" style={{ alignItems: 'center', textAlign: 'center' }}>
                 <div className="how-step-num">{i + 1}</div>
-                <div className="how-step-title" style={{ color: 'white', textAlign: 'center' }}>{isHi ? s.hi : s.en}</div>
-                <div className="how-step-sub" style={{ color: 'rgba(255,255,255,0.65)', textAlign: 'center' }}>{isHi ? s.desc_hi : s.desc_en}</div>
+                <div className="how-step-title" style={{ color: 'white' }}>{isHi ? s.hi : s.en}</div>
+                <div className="how-step-sub" style={{ color: 'rgba(255,255,255,0.75)' }}>{isHi ? s.desc_hi : s.desc_en}</div>
               </div>
             ))}
           </div>
           <div style={{ textAlign: 'center', marginTop: 'var(--sp-xl)' }}>
-            <button className="btn btn-primary btn-lg" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <button className="btn btn-green btn-lg" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               {isHi ? 'अभी सेवा बुक करें' : 'Book a Service Now'} <ArrowRight size={18} />
             </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Cooperative Societies ─────────────────────────── */}
-      <section className="section">
-        <div className="container">
-          <div className="section-header">
-            <div>
-              <h2 className="section-title">{isHi ? 'हमारी सहकारी समितियां' : 'Our Cooperative Societies'}</h2>
-              <p className="section-subtitle">{isHi ? 'भारत के 28 राज्यों की पंजीकृत श्रम सहकारी समितियां' : 'Registered Labour Cooperatives across 28 states'}</p>
-            </div>
-          </div>
-          <div className="grid-3">
-            {[
-              { name: 'Delhi Shramik Sahakari Federation', state: 'Delhi', workers: 2840, rating: 4.8 },
-              { name: 'Maharashtra Kamgar Sahakari Mandal', state: 'Maharashtra', workers: 3120, rating: 4.7 },
-              { name: 'Karnataka Karmika Sahakari Sangha', state: 'Karnataka', workers: 1950, rating: 4.9 },
-            ].map((s, i) => (
-              <div key={i} className="card card-hover" style={{ padding: 'var(--sp-md)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 'var(--sp-sm)' }}>
-                  <div style={{ width: 40, height: 40, background: 'var(--navy)', borderRadius: 'var(--r-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>🤝</div>
-                  <div>
-                    <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--navy)', lineHeight: 1.3 }}>{s.name}</div>
-                    <div style={{ fontSize: 12, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <MapPin size={11} /> {s.state}
-                    </div>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
-                  <div>
-                    <div style={{ fontWeight: 700, color: 'var(--green)' }}>{s.workers.toLocaleString('en-IN')}</div>
-                    <div style={{ color: 'var(--text-muted)', fontSize: 11 }}>{isHi ? 'कामगार' : 'Workers'}</div>
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 700, color: '#F59E0B', display: 'flex', alignItems: 'center', gap: 3 }}>★ {s.rating}</div>
-                    <div style={{ color: 'var(--text-muted)', fontSize: 11 }}>{isHi ? 'रेटिंग' : 'Rating'}</div>
-                  </div>
-                  <span className="badge badge-green">{isHi ? 'NCCT मान्यता' : 'NCCT Approved'}</span>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>

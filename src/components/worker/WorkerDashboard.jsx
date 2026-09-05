@@ -37,20 +37,28 @@ const INCOMING_JOB = {
 };
 
 export const WorkerDashboard = () => {
-  const { language, currentWorker, workerDuty, setWorkerDuty, workerEarnings } = usePlatform();
+  const { language, currentWorker, workerDuty, setWorkerDuty, workerEarnings, showToast } = usePlatform();
   const isHi = language === 'hi';
 
   const [activeTab, setActiveTab] = useState('earnings');
   const [showIncoming, setShowIncoming] = useState(true);
   const [skillOpen, setSkillOpen] = useState(false);
 
-  const toggleDuty = () => setWorkerDuty(d => ({ ...d, isOnDuty: !d.isOnDuty }));
+  const toggleDuty = () => {
+    const nextDuty = !workerDuty.isOnDuty;
+    setWorkerDuty(d => ({ ...d, isOnDuty: nextDuty }));
+    showToast(
+      nextDuty ? "Status: ON DUTY" : "Status: OFF DUTY",
+      nextDuty ? "You are now visible for incoming jobs in your area." : "Job dispatch paused.",
+      nextDuty ? "success" : "info"
+    );
+  };
 
   const w = currentWorker;
 
   return (
     <div className="container" style={{ paddingTop: 'var(--sp-lg)' }}>
-      {/* ── Worker Header ────────────────────────────────── */}
+      {/* ── Worker Header Card ────────────────────────────── */}
       <div className="id-card" style={{ marginBottom: 'var(--sp-lg)' }}>
         <div style={{ display: 'flex', gap: 'var(--sp-md)', alignItems: 'flex-start', flexWrap: 'wrap' }}>
           <img
@@ -97,9 +105,9 @@ export const WorkerDashboard = () => {
       {/* ── Incoming Job Alert ───────────────────────────── */}
       {showIncoming && workerDuty.isOnDuty && (
         <div className="job-card" style={{ marginBottom: 'var(--sp-lg)' }}>
-          <div className="flex-between" style={{ marginBottom: 'var(--sp-sm)', flexWrap: 'wrap', gap: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--sp-sm)', flexWrap: 'wrap', gap: 8 }}>
             <div>
-              <div style={{ fontFamily: 'var(--font-head)', fontSize: 17, fontWeight: 800, color: 'var(--saffron)' }}>
+              <div style={{ fontFamily: 'var(--font-head)', fontSize: 17, fontWeight: 800, color: 'var(--saffron-dark)' }}>
                 🔔 {isHi ? 'नया काम आया!' : 'New Job Request!'}
               </div>
               <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text)', marginTop: 2 }}>
@@ -107,7 +115,7 @@ export const WorkerDashboard = () => {
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontFamily: 'var(--font-head)', fontSize: 20, fontWeight: 800, color: 'var(--green)' }}>₹{INCOMING_JOB.workerWage}</div>
+              <div style={{ fontFamily: 'var(--font-head)', fontSize: 20, fontWeight: 800, color: 'var(--coop-green)' }}>₹{INCOMING_JOB.workerWage}</div>
               <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{isHi ? 'आपकी कमाई (88%)' : 'Your earning (88%)'}</div>
             </div>
           </div>
@@ -116,7 +124,7 @@ export const WorkerDashboard = () => {
             <span><Clock size={12} style={{ display: 'inline' }} /> {isHi ? `ETA: ${INCOMING_JOB.eta}` : `ETA: ${INCOMING_JOB.eta}`}</span>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
-            <button className="btn btn-green" style={{ flex: 1 }} onClick={() => setShowIncoming(false)}>
+            <button className="btn btn-green" style={{ flex: 1 }} onClick={() => { setShowIncoming(false); showToast("Job Accepted!", "Navigating to customer location.", "success"); }}>
               <CheckCircle2 size={16} /> {isHi ? 'स्वीकार करें' : 'Accept Job'}
             </button>
             <button className="btn btn-ghost" onClick={() => setShowIncoming(false)}>
@@ -129,10 +137,10 @@ export const WorkerDashboard = () => {
       {/* ── KPI Cards ────────────────────────────────────── */}
       <div className="kpi-grid" style={{ marginBottom: 'var(--sp-lg)' }}>
         {[
-          { label: isHi ? 'आज की कमाई' : "Today's Earnings", value: `₹${workerEarnings.todayGross.toLocaleString('en-IN')}`, sub: isHi ? 'शुद्ध (88%)' : 'net (88%)', color: 'var(--green)', icon: '💰' },
-          { label: isHi ? 'माह की कमाई' : 'Monthly Earnings', value: `₹${workerEarnings.monthGross.toLocaleString('en-IN')}`, sub: isHi ? 'इस माह' : 'this month', color: 'var(--navy)', icon: '📅' },
-          { label: isHi ? 'कल्याण कोष' : 'Welfare Balance', value: `₹${workerEarnings.welfareBalance.toLocaleString('en-IN')}`, sub: isHi ? 'Ayushman + PMJJBY' : 'Ayushman + PMJJBY', color: 'var(--saffron)', icon: '🏥' },
-          { label: isHi ? 'पेंशन संचय' : 'Pension Balance', value: `₹${workerEarnings.pensionBalance.toLocaleString('en-IN')}`, sub: isHi ? 'PM-SYM' : 'PM-SYM', color: 'var(--amber)', icon: '🏦' },
+          { label: isHi ? 'आज की कमाई' : "Today's Earnings", value: `₹${workerEarnings.todayGross.toLocaleString('en-IN')}`, sub: isHi ? 'शुद्ध (88%)' : 'net (88%)', color: 'var(--coop-green)', icon: '💰' },
+          { label: isHi ? 'माह की कमाई' : 'Monthly Earnings', value: `₹${workerEarnings.monthGross.toLocaleString('en-IN')}`, sub: isHi ? 'इस माह' : 'this month', color: 'var(--primary-navy)', icon: '📅' },
+          { label: isHi ? 'कल्याण कोष' : 'Welfare Balance', value: `₹${workerEarnings.welfareBalance.toLocaleString('en-IN')}`, sub: isHi ? 'Ayushman + PMJJBY' : 'Ayushman + PMJJBY', color: 'var(--saffron-dark)', icon: '🏥' },
+          { label: isHi ? 'पेंशन संचय' : 'Pension Balance', value: `₹${workerEarnings.pensionBalance.toLocaleString('en-IN')}`, sub: isHi ? 'PM-SYM' : 'PM-SYM', color: 'var(--info)', icon: '🏦' },
         ].map((k, i) => (
           <div key={i} className="kpi-card">
             <div style={{ fontSize: 22 }}>{k.icon}</div>
@@ -184,7 +192,7 @@ export const WorkerDashboard = () => {
                     <td style={{ fontWeight: 600 }}>{row.service}</td>
                     <td style={{ color: 'var(--text-muted)', fontSize: 13 }}>{row.customer}</td>
                     <td>₹{row.gross}</td>
-                    <td style={{ fontWeight: 700, color: 'var(--green)' }}>₹{row.wage}</td>
+                    <td style={{ fontWeight: 700, color: 'var(--coop-green)' }}>₹{row.wage}</td>
                     <td><span className="badge badge-green">✓ {isHi ? 'भुगतान हुआ' : 'Paid'}</span></td>
                   </tr>
                 ))}
@@ -193,8 +201,8 @@ export const WorkerDashboard = () => {
           </div>
 
           {/* Monthly summary */}
-          <div className="card" style={{ marginTop: 'var(--sp-lg)', background: 'var(--navy)', color: 'white' }}>
-            <div style={{ fontFamily: 'var(--font-head)', fontSize: 15, fontWeight: 700, marginBottom: 'var(--sp-md)', color: 'rgba(255,255,255,0.8)' }}>
+          <div className="card" style={{ marginTop: 'var(--sp-lg)', background: 'var(--primary-navy)', color: 'white' }}>
+            <div style={{ fontFamily: 'var(--font-head)', fontSize: 15, fontWeight: 700, marginBottom: 'var(--sp-md)', color: 'rgba(255,255,255,0.85)' }}>
               📊 {isHi ? 'सितंबर 2026 — मासिक सारांश' : 'September 2026 — Monthly Summary'}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--sp-md)' }}>
@@ -205,7 +213,7 @@ export const WorkerDashboard = () => {
               ].map((s, i) => (
                 <div key={i} style={{ textAlign: 'center' }}>
                   <div style={{ fontFamily: 'var(--font-head)', fontSize: 22, fontWeight: 800, color: s.color }}>{s.value}</div>
-                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginTop: 4 }}>{s.label}</div>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginTop: 4 }}>{s.label}</div>
                 </div>
               ))}
             </div>

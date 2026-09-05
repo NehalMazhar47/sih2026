@@ -1,102 +1,124 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { usePlatform } from '../../context/PlatformContext';
-import { ShieldCheck, X, CheckCircle2, Clock, AlertTriangle } from 'lucide-react';
-
-const PENDING = [
-  { id: 'P-001', name: 'Ravi Shankar Yadav',   trade: 'Electrician', trade_hi: 'इलेक्ट्रीशियन', state: 'UP',      ncct: 'Level 3', aadhaar: '✓', police: '✓', medical: '✓', experience: '5 yrs' },
-  { id: 'P-002', name: 'Lalita Kumari',         trade: 'Caregiver',   trade_hi: 'देखभालकर्ता',  state: 'Bihar',   ncct: 'Level 2', aadhaar: '✓', police: '✓', medical: '⏳', experience: '3 yrs' },
-  { id: 'P-003', name: 'Suresh Mistry',         trade: 'Carpenter',   trade_hi: 'बढ़ई',          state: 'Gujarat', ncct: 'Level 3', aadhaar: '✓', police: '⏳', medical: '✓', experience: '9 yrs' },
-];
+import {
+  ShieldCheck,
+  FileCheck,
+  Award,
+  CheckCircle2,
+  XCircle,
+  AlertCircle,
+  UserCheck,
+  Building,
+  GraduationCap
+} from 'lucide-react';
 
 export const WorkerVerificationDesk = () => {
-  const { language, triggerToast } = usePlatform();
+  const { pendingWorkers, approveWorkerVerification, showToast, language, t } = usePlatform();
   const isHi = language === 'hi';
-  const [pending, setPending] = useState(PENDING);
 
-  const approve = (id) => {
-    setPending(p => p.filter(w => w.id !== id));
-    triggerToast && triggerToast(isHi ? '✓ कामगार सत्यापित और अनुमोदित!' : '✓ Worker verified and approved!');
-  };
-  const reject = (id) => {
-    setPending(p => p.filter(w => w.id !== id));
-    triggerToast && triggerToast(isHi ? 'आवेदन अस्वीकृत।' : 'Application rejected.');
+  const handleFlagRetest = (workerName) => {
+    showToast(isHi ? "आवेदन चिह्नित किया गया" : "Application Flagged", isHi ? `${workerName} को NCCT संस्थान में 2-दिवसीय प्रैक्टिकल पुनश्चर्या लैब हेतु निर्धारित किया गया।` : `${workerName} scheduled for 2-day practical refresher lab at NCCT Institute.`, "warning");
   };
 
   return (
-    <div>
-      <div className="section-header">
+    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '22px', flexWrap: 'wrap', gap: '10px' }}>
         <div>
-          <h2 className="section-title" style={{ fontSize: 18 }}>
-            🔍 {isHi ? 'NCCT कामगार सत्यापन डेस्क' : 'NCCT Worker Verification Desk'}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="badge badge-saffron">{isHi ? "अनुपालन एवं ऑनबोर्डिंग डेस्क" : "Compliance & Onboarding Desk"}</span>
+            <span className="badge badge-blue">
+              {pendingWorkers.length} {isHi ? "आवेदन समीक्षाधीन" : "Applications In Review"}
+            </span>
+          </div>
+          <h2 style={{ fontSize: '24px', marginTop: '4px' }}>
+            {isHi ? "श्रमिक कौशल प्रोफाइलिंग एवं सहकारी प्रमाणन डेस्क" : "Worker Skill Profiling & Cooperative Certification Desk"}
           </h2>
-          <p className="section-subtitle">
-            {isHi ? 'आधार, पुलिस क्लियरेंस, चिकित्सा और NCCT प्रमाणपत्र जांच' : 'Aadhaar, Police Clearance, Medical & NCCT credential checks'}
-          </p>
         </div>
-        <span className="badge badge-amber"><Clock size={11} /> {pending.length} {isHi ? 'प्रतीक्षारत' : 'Pending'}</span>
       </div>
 
-      {pending.length === 0 ? (
-        <div className="alert alert-success">
-          <CheckCircle2 size={18} />
-          <span style={{ fontWeight: 600 }}>{isHi ? 'सभी आवेदन निपटाए गए!' : 'All applications processed!'}</span>
+      {pendingWorkers.length === 0 ? (
+        <div className="glass-panel" style={{ padding: '40px', textAlign: 'center' }}>
+          <CheckCircle2 size={48} color="#10b981" style={{ margin: '0 auto 14px' }} />
+          <h3 style={{ fontSize: '18px' }}>{isHi ? "सभी सत्यापन आवेदन स्वीकृत" : "All Verification Applications Cleared"}</h3>
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
+            {isHi ? "सभी अभ्यर्थी कारीगरों का परीक्षण, प्रमाणन एवं NCCT डिजिटल बैज जारी कर दिया गया है।" : "All candidate artisans have been tested, certified, and issued NCCT Digital Badges."}
+          </p>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-md)' }}>
-          {pending.map(w => (
-            <div key={w.id} className="card">
-              <div className="flex-between" style={{ marginBottom: 'var(--sp-md)', flexWrap: 'wrap', gap: 8 }}>
-                <div>
-                  <div style={{ fontFamily: 'var(--font-head)', fontSize: 16, fontWeight: 700, color: 'var(--navy)' }}>{w.name}</div>
-                  <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
-                    {isHi ? w.trade_hi : w.trade} • {w.state} • {w.experience} • {w.ncct}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {pendingWorkers.map(cand => (
+            <div
+              key={cand.id}
+              className="glass-panel"
+              style={{
+                padding: '24px',
+                border: '1px solid rgba(244,140,6,0.3)',
+                display: 'flex',
+                gap: '20px',
+                flexWrap: 'wrap',
+                alignItems: 'center'
+              }}
+            >
+              <img
+                src={cand.avatarUrl}
+                alt={cand.name}
+                style={{ width: '80px', height: '80px', borderRadius: '18px', objectFit: 'cover', border: '2px solid var(--saffron)' }}
+              />
+
+              <div style={{ flex: 1, minWidth: '240px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <h3 style={{ fontSize: '18px', color: '#ffffff' }}>{cand.name}</h3>
+                  <span className="badge badge-saffron" style={{ textTransform: 'capitalize' }}>
+                    {isHi ? (cand.trade === 'electrician' ? 'इलेक्ट्रीशियन' : (cand.trade === 'plumber' ? 'प्लंबर' : (cand.trade === 'painter' ? 'पेंटर' : cand.trade))) : cand.trade}
+                  </span>
+                </div>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                  {isHi ? "संबद्ध समिति:" : "Affiliated Society:"} <b>{cand.societyName}</b> • {isHi ? "आवेदन दिनांक:" : "Applied:"} {cand.appliedDate}
+                </div>
+
+                {/* Criteria Checks Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px', marginTop: '14px', fontSize: '12px' }}>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '8px 12px', borderRadius: '8px' }}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>{isHi ? "NCCT पाठ्यक्रम पूर्ण:" : "NCCT Course Completed:"}</span>
+                    <div style={{ fontWeight: 600, color: '#38bdf8' }}>{cand.ncctCourseTaken}</div>
+                  </div>
+
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '8px 12px', borderRadius: '8px' }}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>{isHi ? "ट्रेड प्रैक्टिकल अंक:" : "Trade Practical Score:"}</span>
+                    <div style={{ fontWeight: 800, color: '#34d399' }}>{cand.tradeTestScore}% ({isHi ? "विशिष्ट" : "Distinction"})</div>
+                  </div>
+
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '8px 12px', borderRadius: '8px' }}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>{isHi ? "पुलिस क्लीयरेंस:" : "Police Clearance:"}</span>
+                    <div style={{ fontWeight: 600, color: '#34d399' }}>{cand.policeClearanceCert}</div>
+                  </div>
+
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '8px 12px', borderRadius: '8px' }}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>{isHi ? "आधार e-KYC:" : "Aadhaar e-KYC:"}</span>
+                    <div style={{ fontWeight: 600, color: '#ffffff' }}>{cand.aadhaarNumber} ({isHi ? "सत्यापित" : "Linked"})</div>
                   </div>
                 </div>
-                <span className="badge badge-gray">#{w.id}</span>
               </div>
 
-              {/* Criteria checks */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: 8, marginBottom: 'var(--sp-md)' }}>
-                {[
-                  { label: isHi ? 'आधार ई-केवाईसी' : 'Aadhaar e-KYC', status: w.aadhaar },
-                  { label: isHi ? 'पुलिस क्लियरेंस' : 'Police Clearance', status: w.police },
-                  { label: isHi ? 'चिकित्सा जांच' : 'Medical Check', status: w.medical },
-                  { label: `NCCT ${w.ncct}`, status: '✓' },
-                ].map((c, i) => (
-                  <div key={i} style={{
-                    padding: '8px 12px',
-                    borderRadius: 'var(--r-md)',
-                    background: c.status === '✓' ? 'var(--green-pale)' : 'var(--amber-pale)',
-                    border: `1px solid ${c.status === '✓' ? '#A7DFC4' : '#FFE082'}`,
-                    fontSize: 12
-                  }}>
-                    <div style={{ fontWeight: 700, color: c.status === '✓' ? 'var(--green)' : 'var(--amber)' }}>
-                      {c.status === '✓' ? '✅' : '⏳'} {c.status === '✓' ? (isHi ? 'सत्यापित' : 'Verified') : (isHi ? 'प्रतीक्षारत' : 'Pending')}
-                    </div>
-                    <div style={{ color: 'var(--text-muted)', marginTop: 2 }}>{c.label}</div>
-                  </div>
-                ))}
-              </div>
-
-              <div style={{ display: 'flex', gap: 10 }}>
+              {/* Action Buttons */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', minWidth: '180px' }}>
                 <button
-                  className="btn btn-green"
-                  style={{ flex: 1 }}
-                  onClick={() => approve(w.id)}
-                  disabled={w.police === '⏳' || w.medical === '⏳'}
+                  id={`approve-worker-${cand.id}-btn`}
+                  onClick={() => approveWorkerVerification(cand.id)}
+                  className="btn-emerald"
+                  style={{ fontSize: '13px', padding: '10px 16px' }}
                 >
-                  <CheckCircle2 size={15} /> {isHi ? 'अनुमोदन करें' : 'Approve & Badge'}
+                  <CheckCircle2 size={16} /> {isHi ? "स्वीकृत करें व NCCT बैज जारी करें" : "Approve & Issue NCCT Badge"}
                 </button>
-                <button className="btn btn-ghost" onClick={() => reject(w.id)}>
-                  <X size={15} /> {isHi ? 'अस्वीकार' : 'Reject'}
+
+                <button
+                  onClick={() => handleFlagRetest(cand.name)}
+                  className="btn-secondary"
+                  style={{ fontSize: '12px', padding: '8px 14px' }}
+                >
+                  <AlertCircle size={14} /> {isHi ? "पुनश्चर्या प्रशिक्षण लैब भेजें" : "Schedule Refresher Lab"}
                 </button>
               </div>
-              {(w.police === '⏳' || w.medical === '⏳') && (
-                <div className="alert alert-warning mt-sm" style={{ fontSize: 12 }}>
-                  <AlertTriangle size={14} />
-                  {isHi ? 'अनुमोदन से पहले सभी जांच पूर्ण होनी चाहिए।' : 'All checks must be complete before approval.'}
-                </div>
-              )}
             </div>
           ))}
         </div>

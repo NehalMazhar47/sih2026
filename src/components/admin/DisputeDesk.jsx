@@ -1,97 +1,125 @@
 import React, { useState } from 'react';
 import { usePlatform } from '../../context/PlatformContext';
-import { CheckCircle2, Clock, XCircle } from 'lucide-react';
-
-const DISPUTES = [
-  { id: 'D-221', customer: 'Priya Nair', worker: 'Satish Verma', issue_en: 'Work not completed as promised', issue_hi: 'वादे के अनुसार काम नहीं हुआ', amount: 450, status: 'open', filed: '03 Sep 2026' },
-  { id: 'D-219', customer: 'Mohan Das', worker: 'Ramesh Gaikwad', issue_en: 'Overcharged beyond fixed rate', issue_hi: 'निश्चित दर से अधिक शुल्क लिया', amount: 280, status: 'under_review', filed: '02 Sep 2026' },
-  { id: 'D-215', customer: 'Sunita Patel', worker: 'Arvind Singh', issue_en: 'Worker arrived late by 2 hours', issue_hi: 'कामगार 2 घंटे देरी से आया', amount: 320, status: 'resolved', resolution_en: 'Partial refund of ₹80 issued', resolution_hi: '₹80 का आंशिक रिफंड दिया गया', filed: '30 Aug 2026' },
-];
+import { Scale, MessageSquare, CheckCircle2, Clock, AlertTriangle, ShieldCheck } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 export const DisputeDesk = () => {
-  const { language, triggerToast } = usePlatform();
+  const { showToast, language } = usePlatform();
   const isHi = language === 'hi';
-  const [disputes, setDisputes] = useState(DISPUTES);
-  const [newIssue, setNewIssue] = useState('');
 
-  const resolve = (id) => {
-    setDisputes(d => d.map(disp => disp.id === id ? { ...disp, status: 'resolved', resolution_en: 'Resolved by ombudsman', resolution_hi: 'लोकपाल द्वारा निराकृत' } : disp));
-    triggerToast && triggerToast(isHi ? '✓ विवाद निराकृत।' : '✓ Dispute resolved.');
-  };
+  const [grievances, setGrievances] = useState([
+    {
+      id: "DISP-410",
+      customerName: isHi ? "आलोक सेनगुप्ता (साउथ एक्स, दिल्ली)" : "Alok Sengupta (South Ext, Delhi)",
+      workerName: "दिनेश बाबू चौहान",
+      trade: isHi ? "पेंटर" : "Painter",
+      issue: isHi ? "ग्राहक का दावा था कि मास्टर बेडरूम की 1 दीवार पर प्राइमर का अतिरिक्त कोट लगना चाहिए था।" : "Customer claimed 1 wall in master bedroom required an extra coat of primer.",
+      resolutionProposed: isHi ? "समिति लोकपाल ने 1.5 घंटे का निःशुल्क सुधार कार्य आयोजित किया; सामग्री खर्च सहकारी गुणवत्ता कोष से दिया गया।" : "Society Ombudsman arranged 1.5 hr touch-up free of cost; material reimbursed from Cooperative Quality Fund.",
+      status: isHi ? "निस्तारित - सौहार्दपूर्ण समझौता" : "Resolved - Amicable Agreement",
+      date: "2026-09-02"
+    },
+    {
+      id: "DISP-412",
+      customerName: isHi ? "किरण मजूमदार (वसंत विहार)" : "Kiran Mazumdar (Vasant Vihar)",
+      workerName: "गुरप्रीत सिंह गिल",
+      trade: isHi ? "तकनीशियन" : "Technician",
+      issue: isHi ? "देर रात एसी ब्रेकडाउन सेवा के दौरान स्पेयर कैपेसिटर की कीमत पर विवाद।" : "Dispute over spare capacitor cost during late night AC breakdown service.",
+      resolutionProposed: isHi ? "सहकारी मानक एमआरपी पुर्जों की सूची प्रस्तुत की गई; ग्राहक ने सत्यापित कर रियायती मूल्य का भुगतान किया।" : "Cooperative standard MRP parts catalog presented; customer verified and paid exact subsidized price.",
+      status: isHi ? "निस्तारित - सत्यापित मूल्य" : "Resolved - Verified Pricing",
+      date: "2026-09-03"
+    }
+  ]);
 
-  const STATUS_CONFIG = {
-    open:         { label_en: 'Open',         label_hi: 'खुला',          badge: 'badge-red' },
-    under_review: { label_en: 'Under Review', label_hi: 'समीक्षाधीन',   badge: 'badge-amber' },
-    resolved:     { label_en: 'Resolved',     label_hi: 'निराकृत',        badge: 'badge-green' },
+  const [newDisputeInput, setNewDisputeInput] = useState("");
+
+  const handleAddMediation = (e) => {
+    e.preventDefault();
+    if (!newDisputeInput) return;
+    const newGrievance = {
+      id: `DISP-${Math.floor(420 + Math.random() * 50)}`,
+      customerName: isHi ? "अनाम नागरिक प्रतिपुष्टि" : "Anonymous Household Feedback",
+      workerName: isHi ? "आवंटित सहकारी कारीगर" : "Assigned Cooperative Artisan",
+      trade: isHi ? "इलेक्ट्रीशियन" : "Electrician",
+      issue: newDisputeInput,
+      resolutionProposed: isHi ? "सहकारी समिति ने 24 घंटे के अंदर मध्यस्थता समीक्षा प्रारंभ की।" : "Cooperative Society Committee initiated 24-hr resolution review.",
+      status: isHi ? "मध्यस्थता जारी" : "In Mediation",
+      date: isHi ? "आज" : "Today"
+    };
+    setGrievances([newGrievance, ...grievances]);
+    setNewDisputeInput("");
+    confetti({ particleCount: 30 });
+    showToast(isHi ? "शिकायत दर्ज की गई" : "Grievance Logged", isHi ? "सहकारी लोकपाल समिति को प्रेषित। कारीगर का खाता बिना किसी जुर्माने के सक्रिय रहेगा।" : "Referred to Cooperative Ombudsman Panel. Worker account remains active without penalty.", "info");
   };
 
   return (
-    <div>
-      <div className="section-header">
-        <div>
-          <h2 className="section-title" style={{ fontSize: 18 }}>
-            ⚖️ {isHi ? 'शिकायत व विवाद लोकपाल' : 'Grievance & Dispute Ombudsman'}
+    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+      <div
+        className="glass-panel"
+        style={{
+          padding: '26px',
+          marginBottom: '26px',
+          background: 'linear-gradient(135deg, rgba(20,40,75,0.7) 0%, rgba(10,24,48,0.9) 100%)',
+          border: '1.5px solid var(--teal-accent)'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
+          <Scale size={24} color="#06b6d4" />
+          <h2 style={{ fontSize: '22px' }}>
+            {isHi ? "सहकारी शिकायत निवारण एवं लोकपाल डेस्क" : "Cooperative Grievance Redressal & Ombudsman Desk"}
           </h2>
-          <p className="section-subtitle">
-            {isHi ? 'निष्पक्ष मानवीय सुनवाई — कोई एल्गोरिदमिक प्रतिबंध नहीं' : 'Fair human hearings — no algorithmic bans'}
-          </p>
         </div>
+        <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+          {isHi ? "पारंपरिक निजी कंपनियों में, एल्गोरिदम बिना मानवीय सुनवाई के श्रमिकों को प्रतिबंधित कर देते हैं। श्रमसेतु में, सभी शिकायतों का समाधान लोकतांत्रिक सहकारी सिद्धांतों के तहत सहकारी समिति द्वारा किया जाता है, जिससे श्रमिक की आजीविका की रक्षा होती है और नागरिक को गुणवत्ता की गारंटी मिलती है।" : "In traditional private gig platforms, algorithms arbitrarily ban workers without human hearing. In ShramSetu, all customer complaints are mediated by the Cooperative Society Committee under democratic cooperative principles, protecting worker livelihood while guaranteeing consumer quality."}
+        </p>
       </div>
 
-      {/* File new grievance */}
-      <div className="card" style={{ marginBottom: 'var(--sp-lg)', background: 'var(--bg)' }}>
-        <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--navy)', marginBottom: 10 }}>
-          📝 {isHi ? 'नई शिकायत दर्ज करें' : 'File a New Grievance'}
+      {/* Grievance Quick Log */}
+      <form onSubmit={handleAddMediation} className="glass-panel" style={{ padding: '20px', marginBottom: '26px' }}>
+        <div style={{ fontSize: '13px', fontWeight: 700, marginBottom: '10px' }}>
+          {isHi ? "सहकारी मध्यस्थता हेतु शिकायत दर्ज करें" : "Log a Cooperative Mediation Case"}
         </div>
-        <div style={{ display: 'flex', gap: 10 }}>
+        <div style={{ display: 'flex', gap: '10px' }}>
           <input
             type="text"
             className="form-input"
-            style={{ flex: 1 }}
-            placeholder={isHi ? 'शिकायत का विवरण...' : 'Describe the issue...'}
-            value={newIssue}
-            onChange={e => setNewIssue(e.target.value)}
+            placeholder={isHi ? "शिकायत का विवरण लिखें (उदा. ट्रैफिक के कारण देरी, अतिरिक्त पुर्जे)..." : "Describe customer or artisan grievance (e.g. delay due to traffic, parts availability)..."}
+            value={newDisputeInput}
+            onChange={(e) => setNewDisputeInput(e.target.value)}
           />
-          <button className="btn btn-primary" onClick={() => { setNewIssue(''); triggerToast && triggerToast(isHi ? 'शिकायत दर्ज हुई।' : 'Grievance filed.'); }}>
-            {isHi ? 'दर्ज करें' : 'Submit'}
+          <button type="submit" className="btn-primary" style={{ fontSize: '13px', whiteSpace: 'nowrap' }}>
+            {isHi ? "मध्यस्थता हेतु भेजें" : "Submit for Mediation"}
           </button>
         </div>
-      </div>
+      </form>
 
-      {/* Disputes list */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-md)' }}>
-        {disputes.map(d => {
-          const cfg = STATUS_CONFIG[d.status];
-          return (
-            <div key={d.id} className="card">
-              <div className="flex-between" style={{ marginBottom: 8, flexWrap: 'wrap', gap: 8 }}>
-                <div>
-                  <div style={{ fontFamily: 'var(--font-head)', fontSize: 15, fontWeight: 700, color: 'var(--navy)' }}>#{d.id}</div>
-                  <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>{d.filed}</div>
-                </div>
-                <span className={`badge ${cfg.badge}`}>{isHi ? cfg.label_hi : cfg.label_en}</span>
+      {/* Grievances List */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        {grievances.map(g => (
+          <div
+            key={g.id}
+            className="glass-panel"
+            style={{ padding: '20px', border: '1px solid rgba(255,255,255,0.08)' }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="badge badge-saffron">{g.id}</span>
+                <span style={{ fontWeight: 700, fontSize: '14px', color: '#ffffff' }}>{g.trade}: {g.workerName}</span>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{isHi ? "बनाम" : "vs"} {g.customerName}</span>
               </div>
-              <div style={{ fontSize: 14, marginBottom: 8 }}>
-                <strong>{isHi ? 'समस्या:' : 'Issue:'}</strong> {isHi ? d.issue_hi : d.issue_en}
-              </div>
-              <div style={{ fontSize: 13, color: 'var(--text-muted)', display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 10 }}>
-                <span>👤 {isHi ? 'ग्राहक:' : 'Customer:'} {d.customer}</span>
-                <span>🔧 {isHi ? 'कामगार:' : 'Worker:'} {d.worker}</span>
-                <span>💰 {isHi ? 'राशि:' : 'Amount:'} ₹{d.amount}</span>
-              </div>
-              {d.status === 'resolved' && d.resolution_en && (
-                <div className="alert alert-success" style={{ fontSize: 13, marginBottom: 10 }}>
-                  <CheckCircle2 size={15} /> {isHi ? d.resolution_hi : d.resolution_en}
-                </div>
-              )}
-              {d.status !== 'resolved' && (
-                <button className="btn btn-green btn-sm" onClick={() => resolve(d.id)}>
-                  <CheckCircle2 size={14} /> {isHi ? 'निराकृत करें' : 'Mark Resolved'}
-                </button>
-              )}
+              <span className="badge badge-emerald">
+                <CheckCircle2 size={12} /> {g.status}
+              </span>
             </div>
-          );
-        })}
+
+            <div style={{ fontSize: '13px', color: '#e2e8f0', marginBottom: '8px' }}>
+              <b>{isHi ? "उपभोक्ता फीडबैक:" : "Customer Feedback:"}</b> {g.issue}
+            </div>
+
+            <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', padding: '10px 14px', borderRadius: '10px', fontSize: '12px', color: '#34d399' }}>
+              <b>{isHi ? "लोकपाल समिति समाधान:" : "Ombudsman Resolution:"}</b> {g.resolutionProposed}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
