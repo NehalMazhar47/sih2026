@@ -1,0 +1,236 @@
+import React, { useState } from 'react';
+import { usePlatform } from '../../context/PlatformContext';
+import { WorkerProfile } from './WorkerProfile';
+import { WelfareVault } from './WelfareVault';
+import { SkillAssessmentModal } from './SkillAssessmentModal';
+import {
+  CheckCircle2, XCircle, MapPin, Clock, TrendingUp,
+  User, ShieldCheck, Award, Wallet, BookOpen, BarChart2, Phone
+} from 'lucide-react';
+
+const TABS = [
+  { id: 'earnings',  icon: <BarChart2 size={16} />, en: 'Earnings',     hi: 'आय व पासबुक' },
+  { id: 'profile',   icon: <User size={16} />,      en: 'My Profile',   hi: 'मेरी प्रोफ़ाइल' },
+  { id: 'welfare',   icon: <Wallet size={16} />,    en: 'Welfare',      hi: 'कल्याण कोष' },
+  { id: 'skills',    icon: <BookOpen size={16} />,  en: 'Skills',       hi: 'कौशल परीक्षा' },
+];
+
+const LEDGER = [
+  { date: '04 Sep', service: 'AC Repair',          customer: 'Rajesh Gupta',    gross: 480, wage: 422, status: 'paid' },
+  { date: '03 Sep', service: 'Fan Wiring',          customer: 'Sunita Sharma',   gross: 280, wage: 246, status: 'paid' },
+  { date: '02 Sep', service: 'MCB Replacement',     customer: 'Mohan Lal',       gross: 350, wage: 308, status: 'paid' },
+  { date: '01 Sep', service: 'Switchboard Fix',     customer: 'Priya Nair',      gross: 340, wage: 299, status: 'paid' },
+];
+
+const INCOMING_JOB = {
+  id: 'GIG-4421',
+  service: 'MCB Tripping Fix',
+  service_hi: 'एमसीबी ट्रिपिंग मरम्मत',
+  customer: 'Kavita Mehta',
+  address: 'Flat 3B, Lajpat Nagar, Delhi',
+  address_hi: 'फ्लैट 3B, लाजपत नगर, दिल्ली',
+  distance: '1.2 km',
+  eta: '10 min',
+  estimatedAmount: 350,
+  workerWage: 308,
+  isEmergency: false,
+};
+
+export const WorkerDashboard = () => {
+  const { language, currentWorker, workerDuty, setWorkerDuty, workerEarnings } = usePlatform();
+  const isHi = language === 'hi';
+
+  const [activeTab, setActiveTab] = useState('earnings');
+  const [showIncoming, setShowIncoming] = useState(true);
+  const [skillOpen, setSkillOpen] = useState(false);
+
+  const toggleDuty = () => setWorkerDuty(d => ({ ...d, isOnDuty: !d.isOnDuty }));
+
+  const w = currentWorker;
+
+  return (
+    <div className="container" style={{ paddingTop: 'var(--sp-lg)' }}>
+      {/* ── Worker Header ────────────────────────────────── */}
+      <div className="id-card" style={{ marginBottom: 'var(--sp-lg)' }}>
+        <div style={{ display: 'flex', gap: 'var(--sp-md)', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+          <img
+            src={w?.photo || 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=150&auto=format&fit=crop&q=80'}
+            alt={w?.name}
+            style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: '3px solid rgba(255,183,77,0.5)', flexShrink: 0 }}
+            onError={e => { e.target.style.display = 'none'; }}
+          />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <h1 style={{ fontFamily: 'var(--font-head)', fontSize: 20, fontWeight: 800, color: 'white', margin: 0 }}>{w?.name || 'Satish Kumar Verma'}</h1>
+              <span className="ncct-badge">✓ NCCT Level 4</span>
+            </div>
+            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, marginTop: 4 }}>
+              {isHi ? 'मुख्य इलेक्ट्रीशियन' : 'Chief Electrician'} • {w?.society || 'Delhi Shramik Sahakari'}
+            </div>
+            <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
+              <span style={{ background: 'rgba(255,183,77,0.15)', color: '#FFB74D', border: '1px solid rgba(255,183,77,0.3)', borderRadius: 'var(--r-full)', padding: '3px 10px', fontSize: 12, fontWeight: 700 }}>
+                ★ {w?.rating || '4.9'} ({w?.reviews || 312} {isHi ? 'समीक्षा' : 'reviews'})
+              </span>
+              <span style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.8)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 'var(--r-full)', padding: '3px 10px', fontSize: 12, fontWeight: 600 }}>
+                🔧 {isHi ? '428 गिग पूर्ण' : '428 gigs done'}
+              </span>
+            </div>
+          </div>
+          {/* Duty toggle */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+            <div
+              className="toggle-wrap"
+              onClick={toggleDuty}
+              style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 'var(--r-lg)', padding: '8px 12px' }}
+            >
+              <div style={{ fontSize: 13, color: workerDuty.isOnDuty ? '#4ADE80' : 'rgba(255,255,255,0.5)', fontWeight: 700 }}>
+                {workerDuty.isOnDuty ? (isHi ? '🟢 ड्यूटी पर' : '🟢 On Duty') : (isHi ? '🔴 ऑफ ड्यूटी' : '🔴 Off Duty')}
+              </div>
+              <div className={`toggle-track ${workerDuty.isOnDuty ? 'on' : ''}`} style={{ background: workerDuty.isOnDuty ? '#22c55e' : 'rgba(255,255,255,0.2)' }}>
+                <div className="toggle-thumb" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Incoming Job Alert ───────────────────────────── */}
+      {showIncoming && workerDuty.isOnDuty && (
+        <div className="job-card" style={{ marginBottom: 'var(--sp-lg)' }}>
+          <div className="flex-between" style={{ marginBottom: 'var(--sp-sm)', flexWrap: 'wrap', gap: 8 }}>
+            <div>
+              <div style={{ fontFamily: 'var(--font-head)', fontSize: 17, fontWeight: 800, color: 'var(--saffron)' }}>
+                🔔 {isHi ? 'नया काम आया!' : 'New Job Request!'}
+              </div>
+              <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text)', marginTop: 2 }}>
+                {isHi ? INCOMING_JOB.service_hi : INCOMING_JOB.service}
+              </div>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontFamily: 'var(--font-head)', fontSize: 20, fontWeight: 800, color: 'var(--green)' }}>₹{INCOMING_JOB.workerWage}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{isHi ? 'आपकी कमाई (88%)' : 'Your earning (88%)'}</div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 16, fontSize: 13, color: 'var(--text-muted)', marginBottom: 'var(--sp-md)', flexWrap: 'wrap' }}>
+            <span><MapPin size={12} style={{ display: 'inline' }} /> {isHi ? INCOMING_JOB.address_hi : INCOMING_JOB.address}</span>
+            <span><Clock size={12} style={{ display: 'inline' }} /> {isHi ? `ETA: ${INCOMING_JOB.eta}` : `ETA: ${INCOMING_JOB.eta}`}</span>
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button className="btn btn-green" style={{ flex: 1 }} onClick={() => setShowIncoming(false)}>
+              <CheckCircle2 size={16} /> {isHi ? 'स्वीकार करें' : 'Accept Job'}
+            </button>
+            <button className="btn btn-ghost" onClick={() => setShowIncoming(false)}>
+              <XCircle size={16} /> {isHi ? 'अस्वीकार' : 'Decline'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── KPI Cards ────────────────────────────────────── */}
+      <div className="kpi-grid" style={{ marginBottom: 'var(--sp-lg)' }}>
+        {[
+          { label: isHi ? 'आज की कमाई' : "Today's Earnings", value: `₹${workerEarnings.todayGross.toLocaleString('en-IN')}`, sub: isHi ? 'शुद्ध (88%)' : 'net (88%)', color: 'var(--green)', icon: '💰' },
+          { label: isHi ? 'माह की कमाई' : 'Monthly Earnings', value: `₹${workerEarnings.monthGross.toLocaleString('en-IN')}`, sub: isHi ? 'इस माह' : 'this month', color: 'var(--navy)', icon: '📅' },
+          { label: isHi ? 'कल्याण कोष' : 'Welfare Balance', value: `₹${workerEarnings.welfareBalance.toLocaleString('en-IN')}`, sub: isHi ? 'Ayushman + PMJJBY' : 'Ayushman + PMJJBY', color: 'var(--saffron)', icon: '🏥' },
+          { label: isHi ? 'पेंशन संचय' : 'Pension Balance', value: `₹${workerEarnings.pensionBalance.toLocaleString('en-IN')}`, sub: isHi ? 'PM-SYM' : 'PM-SYM', color: 'var(--amber)', icon: '🏦' },
+        ].map((k, i) => (
+          <div key={i} className="kpi-card">
+            <div style={{ fontSize: 22 }}>{k.icon}</div>
+            <div className="kpi-label">{k.label}</div>
+            <div className="kpi-value" style={{ color: k.color }}>{k.value}</div>
+            <div className="kpi-sub">{k.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Tabs ─────────────────────────────────────────── */}
+      <div className="tab-bar" style={{ marginBottom: 'var(--sp-lg)' }}>
+        {TABS.map(tab => (
+          <button
+            key={tab.id}
+            className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
+            onClick={() => { setActiveTab(tab.id); if (tab.id === 'skills') setSkillOpen(true); }}
+          >
+            {tab.icon} {isHi ? tab.hi : tab.en}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Tab Content ──────────────────────────────────── */}
+      {activeTab === 'earnings' && (
+        <div>
+          <div className="section-header">
+            <div>
+              <h2 className="section-title" style={{ fontSize: 18 }}>{isHi ? 'आय पासबुक' : 'Earnings Passbook'}</h2>
+              <p className="section-subtitle">{isHi ? 'हाल की गिग — 88% आपकी सीधी कमाई' : 'Recent gigs — 88% direct to your account'}</p>
+            </div>
+          </div>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>{isHi ? 'तारीख' : 'Date'}</th>
+                  <th>{isHi ? 'सेवा' : 'Service'}</th>
+                  <th>{isHi ? 'ग्राहक' : 'Customer'}</th>
+                  <th>{isHi ? 'कुल राशि' : 'Total'}</th>
+                  <th>{isHi ? 'आपकी कमाई' : 'Your Wage'}</th>
+                  <th>{isHi ? 'स्थिति' : 'Status'}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {LEDGER.map((row, i) => (
+                  <tr key={i}>
+                    <td style={{ color: 'var(--text-muted)', fontSize: 13 }}>{row.date}</td>
+                    <td style={{ fontWeight: 600 }}>{row.service}</td>
+                    <td style={{ color: 'var(--text-muted)', fontSize: 13 }}>{row.customer}</td>
+                    <td>₹{row.gross}</td>
+                    <td style={{ fontWeight: 700, color: 'var(--green)' }}>₹{row.wage}</td>
+                    <td><span className="badge badge-green">✓ {isHi ? 'भुगतान हुआ' : 'Paid'}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Monthly summary */}
+          <div className="card" style={{ marginTop: 'var(--sp-lg)', background: 'var(--navy)', color: 'white' }}>
+            <div style={{ fontFamily: 'var(--font-head)', fontSize: 15, fontWeight: 700, marginBottom: 'var(--sp-md)', color: 'rgba(255,255,255,0.8)' }}>
+              📊 {isHi ? 'सितंबर 2026 — मासिक सारांश' : 'September 2026 — Monthly Summary'}
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--sp-md)' }}>
+              {[
+                { label: isHi ? 'कुल गिग' : 'Total Gigs', value: '14', color: '#FFB74D' },
+                { label: isHi ? 'ब्रूटो आय' : 'Gross Earned', value: '₹32,400', color: '#4ADE80' },
+                { label: isHi ? 'कल्याण संचय' : 'Welfare Added', value: '₹2,268', color: '#60A5FA' },
+              ].map((s, i) => (
+                <div key={i} style={{ textAlign: 'center' }}>
+                  <div style={{ fontFamily: 'var(--font-head)', fontSize: 22, fontWeight: 800, color: s.color }}>{s.value}</div>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginTop: 4 }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'profile' && <WorkerProfile />}
+      {activeTab === 'welfare' && <WelfareVault />}
+      {activeTab === 'skills' && (
+        <div className="card" style={{ textAlign: 'center', padding: 'var(--sp-xl)' }}>
+          <div style={{ fontSize: 48, marginBottom: 12 }}>🎓</div>
+          <h3 style={{ fontFamily: 'var(--font-head)', color: 'var(--navy)', marginBottom: 8 }}>
+            {isHi ? 'एनसीटीसी कौशल मूल्यांकन' : 'NCCT Skill Assessment'}
+          </h3>
+          <p style={{ color: 'var(--text-muted)', marginBottom: 'var(--sp-lg)', fontSize: 14 }}>
+            {isHi ? 'अपनी NCCT लेवल परीक्षा दें और डिजिटल प्रमाणपत्र प्राप्त करें।' : 'Take your NCCT level exam and earn a digital credential.'}
+          </p>
+          <button className="btn btn-primary" onClick={() => setSkillOpen(true)}>
+            {isHi ? 'परीक्षा शुरू करें' : 'Start Assessment'} <Award size={16} />
+          </button>
+        </div>
+      )}
+
+      {skillOpen && <SkillAssessmentModal onClose={() => { setSkillOpen(false); setActiveTab('earnings'); }} />}
+    </div>
+  );
+};

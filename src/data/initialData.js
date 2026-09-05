@@ -1,0 +1,573 @@
+// Master dataset for SahakarSeva Cooperative Gig Platform
+// Aligned with Ministry of Cooperation & NCCT (National Council for Cooperative Training)
+
+export const COOPERATIVE_SOCIETIES = [
+  {
+    id: "soc-1",
+    name: "Delhi Shramik Sahakari Federation",
+    registrationNo: "MSCS/ND/2021/892",
+    district: "New Delhi",
+    state: "Delhi",
+    pincode: "110001",
+    coordinates: [28.6139, 77.2090],
+    registeredWorkers: 1420,
+    activeGigsToday: 87,
+    welfareCorpusFund: 2845000, // INR
+    president: "Rameshwar Sharma",
+    phone: "+91 11 2338 9011",
+    email: "contact@delhishramikcoop.in",
+    ncctCenterId: "NCCT-RICM-DL-04",
+    trustScore: 98.4
+  },
+  {
+    id: "soc-2",
+    name: "Maharashtra Rajya Mazdoor Sahakari Sangh",
+    registrationNo: "BOM/COOP/2019/3321",
+    district: "Pune / Mumbai",
+    state: "Maharashtra",
+    pincode: "411005",
+    coordinates: [18.5204, 73.8567],
+    registeredWorkers: 2850,
+    activeGigsToday: 143,
+    welfareCorpusFund: 5120000,
+    president: "Sambhaji Gaikwad",
+    phone: "+91 20 2553 4412",
+    email: "pune@mahamazdoor.coop",
+    ncctCenterId: "NCCT-VAMNICOM-MH-01",
+    trustScore: 99.1
+  },
+  {
+    id: "soc-3",
+    name: "Karnataka Labour & Artisans Cooperative Union",
+    registrationNo: "KAR/BLR/COOP/2020/512",
+    district: "Bengaluru Urban",
+    state: "Karnataka",
+    pincode: "560001",
+    coordinates: [12.9716, 77.5946],
+    registeredWorkers: 1980,
+    activeGigsToday: 98,
+    welfareCorpusFund: 3950000,
+    president: "G. Venkatesh",
+    phone: "+91 80 2221 7890",
+    email: "bengaluru@shramikunion.org",
+    ncctCenterId: "NCCT-ICM-BLR-02",
+    trustScore: 97.8
+  },
+  {
+    id: "soc-4",
+    name: "Purvanchal Karigar Sahakari Samiti",
+    registrationNo: "UP/VNS/COOP/2022/108",
+    district: "Varanasi",
+    state: "Uttar Pradesh",
+    pincode: "221002",
+    coordinates: [25.3176, 82.9739],
+    registeredWorkers: 1140,
+    activeGigsToday: 62,
+    welfareCorpusFund: 1890000,
+    president: "Ram Asrey Verma",
+    phone: "+91 542 228 1190",
+    email: "varanasi@purvanchalsahakar.in",
+    ncctCenterId: "NCCT-ICM-VNS-03",
+    trustScore: 96.9
+  }
+];
+
+export const SERVICE_CATEGORIES = [
+  {
+    id: "electrician",
+    name: "Electrician & Solar",
+    hindiName: "इलेक्ट्रीशियन व सौर तकनीशियन",
+    icon: "Zap",
+    tag: "Essential & Emergency",
+    color: "#F59E0B",
+    baseRate: 350,
+    unit: "visiting & first hr",
+    description: "Wiring, switchboard replacement, short circuits, appliance tripping, solar inverter setup.",
+    emergencyAvailable: true,
+    skills: ["Short-Circuit Diagnosis", "3-Phase Distribution", "Solar Rooftop Wiring", "Smart Metering"],
+    fairWageSplit: { worker: 88, welfare: 7, platformNCCT: 5, aggregatorCut: 0 }
+  },
+  {
+    id: "plumber",
+    name: "Plumbing & Drainage",
+    hindiName: "प्लंबिंग एवं जल निकासी",
+    icon: "Droplets",
+    tag: "Essential & Emergency",
+    color: "#06B6D4",
+    baseRate: 320,
+    unit: "visiting & inspection",
+    description: "Burst pipe containment, tap leakage, bathroom fixtures, pump repairs, RO water filtration.",
+    emergencyAvailable: true,
+    skills: ["Pipeline Pressure Testing", "Sanitary Installation", "Submersible Pump Repair", "Leak Detection"],
+    fairWageSplit: { worker: 88, welfare: 7, platformNCCT: 5, aggregatorCut: 0 }
+  },
+  {
+    id: "carpenter",
+    name: "Carpentry & Furniture",
+    hindiName: "बढ़ई एवं फर्नीचर कार्य",
+    icon: "Hammer",
+    tag: "Craft & Repair",
+    color: "#D97706",
+    baseRate: 400,
+    unit: "per repair task",
+    description: "Door lock fixing, furniture assembly, hinge realignment, custom cabinetry, modular kitchen repair.",
+    emergencyAvailable: false,
+    skills: ["Modular Wood Joinery", "High-Security Locksets", "Laminate Restoration", "CNC Ready Fitting"],
+    fairWageSplit: { worker: 88, welfare: 7, platformNCCT: 5, aggregatorCut: 0 }
+  },
+  {
+    id: "painter",
+    name: "Painting & Waterproofing",
+    hindiName: "रंगाई-पुताई व वाटरप्रूफिंग",
+    icon: "Paintbrush",
+    tag: "Renovation",
+    color: "#EC4899",
+    baseRate: 850,
+    unit: "per room / touchup",
+    description: "Interior emulsion, anti-fungal waterproofing, texture walls, pre-festival full home painting.",
+    emergencyAvailable: false,
+    skills: ["Terrace Waterproofing", "Airless Spray Painting", "Anti-Damp Treatment", "Eco-friendly Wall Stencil"],
+    fairWageSplit: { worker: 88, welfare: 7, platformNCCT: 5, aggregatorCut: 0 }
+  },
+  {
+    id: "domestic_help",
+    name: "Domestic Helper & Housekeeping",
+    hindiName: "घरेलू सहायिका एवं गृह प्रबंधन",
+    icon: "Home",
+    tag: "Daily Living",
+    color: "#10B981",
+    baseRate: 300,
+    unit: "per 2-hr block / monthly",
+    description: "Kitchen assistance, daily dusting, utensil management, meal prep assistance, verified background.",
+    emergencyAvailable: true,
+    skills: ["Hygienic Food Handling", "Sanitization Protocol", "Child Safety Awareness", "Garbage Segregation"],
+    fairWageSplit: { worker: 88, welfare: 7, platformNCCT: 5, aggregatorCut: 0 }
+  },
+  {
+    id: "caregiver",
+    name: "Eldercare & Patient Caregiver",
+    hindiName: "बुजुर्ग एवं रोगी परिचर्या",
+    icon: "HeartHandshake",
+    tag: "Compassionate Care",
+    color: "#8B5CF6",
+    baseRate: 650,
+    unit: "per 4-hr shift",
+    description: "Elderly mobility support, medication reminders, blood pressure monitoring, gentle physiotherapy companion.",
+    emergencyAvailable: true,
+    skills: ["Basic Life Support (BLS)", "Geriatric Assistance", "Vitals Measurement", "Post-operative Care"],
+    fairWageSplit: { worker: 90, welfare: 6, platformNCCT: 4, aggregatorCut: 0 }
+  },
+  {
+    id: "driver",
+    name: "Chauffeur & Driver",
+    hindiName: "अनुभवी चालक / ड्राइवर",
+    icon: "Car",
+    tag: "Mobility",
+    color: "#3B82F6",
+    baseRate: 450,
+    unit: "per 4-hr trip",
+    description: "Daily city commute, outstation family drive, senior citizen doctor visits, commercial vehicle transit.",
+    emergencyAvailable: true,
+    skills: ["Defensive Driving", "EV Car Operation", "First Aid Certified", "VIP Etiquette"],
+    fairWageSplit: { worker: 88, welfare: 7, platformNCCT: 5, aggregatorCut: 0 }
+  },
+  {
+    id: "gardener",
+    name: "Gardening & Landscape",
+    hindiName: "बागवानी एवं पौधा पोषण",
+    icon: "Sprout",
+    tag: "Green Spaces",
+    color: "#22C55E",
+    baseRate: 350,
+    unit: "per garden session",
+    description: "Balcony lawn styling, organic soil treatment, drip irrigation, pest prevention, terrace planting.",
+    emergencyAvailable: false,
+    skills: ["Hydroponics Basics", "Organic Composting", "Bonsai Shaping", "Drip System Repair"],
+    fairWageSplit: { worker: 88, welfare: 7, platformNCCT: 5, aggregatorCut: 0 }
+  },
+  {
+    id: "cleaner",
+    name: "Deep Cleaning & Sanitation",
+    hindiName: "गहन सफाई व स्वच्छता सेवा",
+    icon: "Sparkles",
+    tag: "Hygiene",
+    color: "#14B8A6",
+    baseRate: 550,
+    unit: "kitchen or bathroom deep clean",
+    description: "Degreasing kitchen chimneys, anti-bacterial bathroom scrub, mechanized sofa shampoo, post-renovation cleanup.",
+    emergencyAvailable: false,
+    skills: ["Industrial Steamer Use", "Bio-degradable Chemicals", "Glass Facade Polish", "Stain Removal"],
+    fairWageSplit: { worker: 88, welfare: 7, platformNCCT: 5, aggregatorCut: 0 }
+  },
+  {
+    id: "technician",
+    name: "Appliance & AC Technician",
+    hindiName: "उपकरण एवं AC तकनीशियन",
+    icon: "Cpu",
+    tag: "Technical",
+    color: "#6366F1",
+    baseRate: 450,
+    unit: "inspection & gas check",
+    description: "Split AC servicing, jet wash cleaning, refrigerator compressor fix, washing machine PCB diagnosis.",
+    emergencyAvailable: true,
+    skills: ["Inverter PCB Fault Isolation", "R32 Refrigerant Safe Charge", "PCB Micro-soldering", "Motor Rewinding"],
+    fairWageSplit: { worker: 88, welfare: 7, platformNCCT: 5, aggregatorCut: 0 }
+  }
+];
+
+export const VERIFIED_WORKERS = [
+  {
+    id: "wkr-101",
+    name: "Satish Kumar Verma",
+    trade: "electrician",
+    societyId: "soc-1",
+    societyName: "Delhi Shramik Sahakari Federation",
+    ncctCertId: "NCCT-ELE-2023-9481",
+    ncctLevel: "Level 4 (Master Craftsman)",
+    experienceYears: 9,
+    rating: 4.9,
+    ratingCount: 312,
+    gigsCompleted: 428,
+    isAvailable: true,
+    isEmergencyResponder: true,
+    phone: "+91 98112 45890",
+    aadhaarVerified: true,
+    policeVerified: true,
+    toolsCertified: true,
+    coordinates: [28.6180, 77.2150], // Delhi CP area
+    hourlyRate: 350,
+    avatarUrl: "https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=150&auto=format&fit=crop&q=80",
+    welfareBalance: 18450,
+    badges: ["NCCT Master Gold", "Emergency Hero", "100% On-Time"],
+    recentReview: "Satish arrived in 18 minutes during our midnight circuit short! Extremely skilled and courteous."
+  },
+  {
+    id: "wkr-102",
+    name: "Arun Pandurang Shinde",
+    trade: "plumber",
+    societyId: "soc-2",
+    societyName: "Maharashtra Rajya Mazdoor Sahakari Sangh",
+    ncctCertId: "NCCT-PLM-2022-7721",
+    ncctLevel: "Level 4 (Senior Technician)",
+    experienceYears: 12,
+    rating: 4.85,
+    ratingCount: 440,
+    gigsCompleted: 610,
+    isAvailable: true,
+    isEmergencyResponder: true,
+    phone: "+91 94220 89123",
+    aadhaarVerified: true,
+    policeVerified: true,
+    toolsCertified: true,
+    coordinates: [18.5280, 73.8620], // Pune Shivajinagar
+    hourlyRate: 320,
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    welfareBalance: 24300,
+    badges: ["Pipeline Expert", "Coop Trustee", "Quick Fix"],
+    recentReview: "Solved a wall seepage issue that three private plumbers couldn't diagnose. True cooperative honesty!"
+  },
+  {
+    id: "wkr-103",
+    name: "Sunita Devi Paswan",
+    trade: "domestic_help",
+    societyId: "soc-1",
+    societyName: "Delhi Shramik Sahakari Federation",
+    ncctCertId: "NCCT-HMP-2023-3109",
+    ncctLevel: "Level 3 (Certified Housekeeper)",
+    experienceYears: 7,
+    rating: 4.95,
+    ratingCount: 280,
+    gigsCompleted: 395,
+    isAvailable: true,
+    isEmergencyResponder: false,
+    phone: "+91 97188 33140",
+    aadhaarVerified: true,
+    policeVerified: true,
+    toolsCertified: true,
+    coordinates: [28.6250, 77.2280],
+    hourlyRate: 300,
+    avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
+    welfareBalance: 15600,
+    badges: ["Hygiene Champion", "Punctual", "Trusted by 50+ Families"],
+    recentReview: "Sunita Ji is meticulous, trustworthy, and our home feels sparkling clean every time."
+  },
+  {
+    id: "wkr-104",
+    name: "Kavitha Rajendran",
+    trade: "caregiver",
+    societyId: "soc-3",
+    societyName: "Karnataka Labour & Artisans Cooperative Union",
+    ncctCertId: "NCCT-CRG-2024-1184",
+    ncctLevel: "Level 4 (Geriatric & BLS Specialist)",
+    experienceYears: 8,
+    rating: 5.0,
+    ratingCount: 194,
+    gigsCompleted: 245,
+    isAvailable: true,
+    isEmergencyResponder: true,
+    phone: "+91 98450 71182",
+    aadhaarVerified: true,
+    policeVerified: true,
+    toolsCertified: true,
+    coordinates: [12.9780, 77.6010],
+    hourlyRate: 650,
+    avatarUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80",
+    welfareBalance: 29800,
+    badges: ["BLS Certified", "Compassion Star", "Elder Care Mentor"],
+    recentReview: "Looked after my 84-year-old mother with extreme warmth and clinical precision. Highly recommend!"
+  },
+  {
+    id: "wkr-105",
+    name: "Mohammad Altaf Ansari",
+    trade: "carpenter",
+    societyId: "soc-4",
+    societyName: "Purvanchal Karigar Sahakari Samiti",
+    ncctCertId: "NCCT-CRP-2021-4820",
+    ncctLevel: "Level 4 (Master Woodcraftsman)",
+    experienceYears: 15,
+    rating: 4.88,
+    ratingCount: 520,
+    gigsCompleted: 780,
+    isAvailable: true,
+    isEmergencyResponder: false,
+    phone: "+91 94152 66014",
+    aadhaarVerified: true,
+    policeVerified: true,
+    toolsCertified: true,
+    coordinates: [25.3250, 82.9810],
+    hourlyRate: 400,
+    avatarUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80",
+    welfareBalance: 34100,
+    badges: ["Master Woodsmith", "Restoration Genius", "Society Pillar"],
+    recentReview: "Repaired antique teakwood dining set seamlessly. Craftsmanship of a national master!"
+  },
+  {
+    id: "wkr-106",
+    name: "Gurpreet Singh Gill",
+    trade: "technician",
+    societyId: "soc-1",
+    societyName: "Delhi Shramik Sahakari Federation",
+    ncctCertId: "NCCT-HVAC-2023-8842",
+    ncctLevel: "Level 4 (Inverter AC & Refrigeration)",
+    experienceYears: 10,
+    rating: 4.92,
+    ratingCount: 388,
+    gigsCompleted: 512,
+    isAvailable: true,
+    isEmergencyResponder: true,
+    phone: "+91 98102 99401",
+    aadhaarVerified: true,
+    policeVerified: true,
+    toolsCertified: true,
+    coordinates: [28.6320, 77.2190],
+    hourlyRate: 450,
+    avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+    welfareBalance: 21900,
+    badges: ["Fast Cooler Tech", "PCB Expert", "Safety First"],
+    recentReview: "Fixed our inverter split AC gas leak under 40 minutes at half the cost quoted by private companies."
+  },
+  {
+    id: "wkr-107",
+    name: "Dinesh Babu Chauhan",
+    trade: "painter",
+    societyId: "soc-1",
+    societyName: "Delhi Shramik Sahakari Federation",
+    ncctCertId: "NCCT-PNT-2022-6110",
+    ncctLevel: "Level 3 (Waterproofing & Texture)",
+    experienceYears: 6,
+    rating: 4.82,
+    ratingCount: 215,
+    gigsCompleted: 310,
+    isAvailable: true,
+    isEmergencyResponder: false,
+    phone: "+91 98119 77410",
+    aadhaarVerified: true,
+    policeVerified: true,
+    toolsCertified: true,
+    coordinates: [28.6080, 77.2020],
+    hourlyRate: 850,
+    avatarUrl: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&auto=format&fit=crop&q=80",
+    welfareBalance: 17200,
+    badges: ["Waterproof Specialist", "Clean Finish", "Eco Paints"],
+    recentReview: "Flawless painting and zero dust leftover. Truly professional cooperative member."
+  },
+  {
+    id: "wkr-108",
+    name: "Laxman Rao Kadam",
+    trade: "gardener",
+    societyId: "soc-2",
+    societyName: "Maharashtra Rajya Mazdoor Sahakari Sangh",
+    ncctCertId: "NCCT-GRD-2023-1590",
+    ncctLevel: "Level 3 (Urban Horticulture & Drip)",
+    experienceYears: 11,
+    rating: 4.9,
+    ratingCount: 175,
+    gigsCompleted: 230,
+    isAvailable: true,
+    isEmergencyResponder: false,
+    phone: "+91 94230 44510",
+    aadhaarVerified: true,
+    policeVerified: true,
+    toolsCertified: true,
+    coordinates: [18.5150, 73.8500],
+    hourlyRate: 350,
+    avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80",
+    welfareBalance: 13900,
+    badges: ["Green Thumb", "Organic Soil Guru", "Terrace Garden Pro"],
+    recentReview: "Revived our dying apartment balcony plants and set up automated drip tubes. Wonderful work!"
+  }
+];
+
+export const PENDING_VERIFICATION_WORKERS = [
+  {
+    id: "pen-201",
+    name: "Mukesh Chand Sharma",
+    trade: "electrician",
+    societyName: "Delhi Shramik Sahakari Federation",
+    appliedDate: "2026-09-02",
+    tradeTestScore: 94,
+    aadhaarNumber: "XXXX-XXXX-4819",
+    policeClearanceCert: "PCC/ND/2026/0912 (Verified)",
+    ncctCourseTaken: "Solar Rooftop Technician (120 hrs)",
+    avatarUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
+    status: "Pending Review"
+  },
+  {
+    id: "pen-202",
+    name: "Rehana Khatun",
+    trade: "caregiver",
+    societyName: "Kolkata Metropolitan Karigar Federation",
+    appliedDate: "2026-09-03",
+    tradeTestScore: 91,
+    aadhaarNumber: "XXXX-XXXX-8821",
+    policeClearanceCert: "PCC/KOL/2026/4101 (Verified)",
+    ncctCourseTaken: "Geriatric & Bedside Caregiver Level 3",
+    avatarUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80",
+    status: "Pending Review"
+  }
+];
+
+export const WELFARE_PROGRAMS = [
+  {
+    id: "pmjay",
+    name: "Ayushman Bharat PM-JAY",
+    type: "Health Insurance",
+    coverage: "₹5,00,000 / year cashless",
+    govtShare: "Fully subsidized for cooperative gig workers",
+    icon: "ShieldAlert",
+    activeBeneficiaries: 1840,
+    description: "Cooperative members get direct family floater cover for secondary & tertiary hospitalizations across 28,000+ empanelled hospitals."
+  },
+  {
+    id: "pmjjby_pmsby",
+    name: "PMJJBY & PMSBY Bima Combo",
+    type: "Life & Accident Cover",
+    coverage: "₹2,00,000 Life + ₹2,00,000 Accidental Disability",
+    govtShare: "Annual premium (₹436 + ₹20) paid directly from Gig Welfare Pool",
+    icon: "ShieldCheck",
+    activeBeneficiaries: 2190,
+    description: "Automatic risk protection funded by the 7% welfare deduction on every booking. Zero out-of-pocket payment from the artisan."
+  },
+  {
+    id: "pmsym",
+    name: "PM-SYM Sahakar Pension",
+    type: "Guaranteed Monthly Pension",
+    coverage: "₹3,000 / month after age 60",
+    govtShare: "50% matched by Central Government",
+    icon: "Coins",
+    activeBeneficiaries: 1650,
+    description: "Ensures that unorganized gig artisans don't retire into poverty. Monthly micro-contributions are systematically deposited into their pension PRAN."
+  },
+  {
+    id: "tool_loan",
+    name: "Sahakar Equipment & Distress Fund",
+    type: "0% Interest Micro-Credit",
+    coverage: "Up to ₹25,000 instant loan",
+    govtShare: "Underwritten by Cooperative Federation Corpus",
+    icon: "Wrench",
+    activeBeneficiaries: 340,
+    description: "Instant sanction for purchase of modern power tools, safety gear, or family medical emergencies. Repayable through future gig earnings."
+  }
+];
+
+export const AI_SEASONAL_FORECAST = {
+  currentSeason: "Pre-Festival & Late Monsoon Transition",
+  activeAlert: "High Demand Projected for Deep Cleaning, Painting & Rooftop Solar Repair",
+  clusters: [
+    {
+      wardName: "North Central Ward & Connaught Enclave",
+      tradeSurges: [
+        { trade: "painter", projectedIncrease: "+185%", driver: "Pre-Diwali Renovation Wave", recommendedTransfers: 35 },
+        { trade: "cleaner", projectedIncrease: "+140%", driver: "Post-Monsoon Deep Cleaning", recommendedTransfers: 28 },
+        { trade: "electrician", projectedIncrease: "+65%", driver: "Festival Decorative Lighting & Inverters", recommendedTransfers: 15 }
+      ],
+      currentWorkerDeficit: 78,
+      suggestedAction: "Mobilize surplus artisans from Outer Rural Societies (Sonipat & Ghaziabad) with 15% festival cooperative stipend."
+    },
+    {
+      wardName: "Shivaji Nagar & Deccan Valley (Pune)",
+      tradeSurges: [
+        { trade: "plumber", projectedIncrease: "+120%", driver: "Heavy Catchment Area Seepage", recommendedTransfers: 22 },
+        { trade: "technician", projectedIncrease: "+75%", driver: "Appliance Humidity Damage", recommendedTransfers: 14 }
+      ],
+      currentWorkerDeficit: 36,
+      suggestedAction: "Rebalance 25 workers from Agricultural Cooperatives currently in off-season harvesting gap."
+    }
+  ],
+  simulationScenarios: [
+    {
+      id: "diwali",
+      name: "Diwali / Festive Peak (October - November)",
+      multipliers: { painter: 2.8, cleaner: 2.4, carpenter: 1.9, electrician: 1.6, domestic_help: 1.3, plumber: 0.9 },
+      aiSummary: "Extreme nationwide demand for interior decorators, whitewashers, and deep-cleaners. Recommended to run NCCT 3-day refresher batch on Airless Spray painting."
+    },
+    {
+      id: "monsoon",
+      name: "Monsoon Surge (July - August)",
+      multipliers: { plumber: 2.9, electrician: 1.8, technician: 1.4, cleaner: 1.5, painter: 0.4, carpenter: 0.8 },
+      aiSummary: "Critical spike in roof leakage, choked sewage, and short-circuit faults. Emergency SOS SLA needs priority allocation."
+    },
+    {
+      id: "summer",
+      name: "Peak Summer Heatwave (May - June)",
+      multipliers: { technician: 3.1, electrician: 2.1, plumber: 1.5, driver: 1.2, painter: 1.0, cleaner: 0.9 },
+      aiSummary: "AC, desert cooler, and water pump breakdowns overload urban centers. Recommended to deploy 120 technicians from neighboring district societies."
+    }
+  ]
+};
+
+export const NCCT_UPSKILLING_COURSES = [
+  {
+    id: "ncct-crs-1",
+    title: "Solar Rooftop & Inverter Grid Technician",
+    duration: "40 Hours (Hybrid)",
+    certification: "NCCT & Skill India Level-4",
+    stipend: "₹2,500 Cooperative Grant",
+    sponsoredBy: "Ministry of Cooperation & MNRE",
+    enrolledCount: 412,
+    badgeAwarded: "Solar Master Tech",
+    seatsRemaining: 18
+  },
+  {
+    id: "ncct-crs-2",
+    title: "Smart Home IoT & EV Wallbox Installer",
+    duration: "30 Hours (Practical Lab)",
+    certification: "NCCT Advanced Tech Badge",
+    stipend: "₹2,000 Cooperative Grant",
+    sponsoredBy: "NCCT New Delhi",
+    enrolledCount: 290,
+    badgeAwarded: "EV & IoT Specialist",
+    seatsRemaining: 12
+  },
+  {
+    id: "ncct-crs-3",
+    title: "Green Anti-Microbial Deep Sanitation Standards",
+    duration: "20 Hours",
+    certification: "NCCT Sanitation Champion",
+    stipend: "₹1,500 Cooperative Grant",
+    sponsoredBy: "Swachh Bharat Cooperative Cell",
+    enrolledCount: 520,
+    badgeAwarded: "Bio-Sanitation Pro",
+    seatsRemaining: 25
+  }
+];
