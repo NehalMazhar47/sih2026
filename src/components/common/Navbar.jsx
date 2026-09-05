@@ -9,6 +9,9 @@ export const Navbar = ({ onOpenPitch }) => {
   const {
     role, setRole,
     language, setLanguage,
+    currentUser,
+    setWorkerTab,
+    setIsCustomerProfileOpen,
     t, speakText, activeBooking
   } = usePlatform();
 
@@ -252,6 +255,35 @@ export const Navbar = ({ onOpenPitch }) => {
               onClick={() => window.dispatchEvent(new CustomEvent('open-voice-assistant'))}
             >
               <Mic size={17} color="var(--navy)" />
+            </button>
+
+            {/* My Profile Button */}
+            {currentUser && (
+              <button
+                id="my-profile-btn"
+                className="btn btn-outline"
+                style={{ padding: '6px 14px', fontSize: 13, borderColor: 'var(--coop-green)', color: 'var(--coop-green)', fontWeight: 700 }}
+                onClick={() => {
+                  if (role === 'worker') {
+                    setWorkerTab('profile');
+                  } else {
+                    setIsCustomerProfileOpen(true);
+                  }
+                }}
+              >
+                <Users size={14} />
+                {isHi ? 'मेरी प्रोफ़ाइल' : 'My Profile'}
+              </button>
+            )}
+
+            {/* Register / Login Modal Trigger */}
+            <button
+              id="auth-register-btn"
+              className="btn btn-outline"
+              style={{ padding: '6px 14px', fontSize: 13, borderColor: 'var(--primary-navy)', color: 'var(--primary-navy)', fontWeight: 700 }}
+              onClick={() => window.dispatchEvent(new CustomEvent('open-auth-modal', { detail: { role } }))}
+            >
+              {isHi ? 'पंजीकरण / लॉग इन' : 'Register / Login'}
             </button>
 
             {/* Emergency SOS button */}

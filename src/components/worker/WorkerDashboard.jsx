@@ -3,6 +3,7 @@ import { usePlatform } from '../../context/PlatformContext';
 import { WorkerProfile } from './WorkerProfile';
 import { WelfareVault } from './WelfareVault';
 import { SkillAssessmentModal } from './SkillAssessmentModal';
+import { NavigationMap } from '../common/NavigationMap';
 import {
   CheckCircle2, XCircle, MapPin, Clock, TrendingUp,
   User, ShieldCheck, Award, Wallet, BookOpen, BarChart2, Phone
@@ -37,11 +38,13 @@ const INCOMING_JOB = {
 };
 
 export const WorkerDashboard = () => {
-  const { language, currentWorker, workerDuty, setWorkerDuty, workerEarnings, showToast } = usePlatform();
+  const { language, currentWorker, currentUser, workerDuty, setWorkerDuty, workerEarnings, workerTab, setWorkerTab, showToast, setRole } = usePlatform();
   const isHi = language === 'hi';
 
-  const [activeTab, setActiveTab] = useState('earnings');
+  const activeTab = workerTab || 'earnings';
+  const setActiveTab = (t) => setWorkerTab(t);
   const [showIncoming, setShowIncoming] = useState(true);
+  const [activeJobNav, setActiveJobNav] = useState(false);
   const [skillOpen, setSkillOpen] = useState(false);
 
   const toggleDuty = () => {
@@ -54,10 +57,111 @@ export const WorkerDashboard = () => {
     );
   };
 
+  const handleAcceptJob = () => {
+    setShowIncoming(false);
+    setActiveJobNav(true);
+    showToast(
+      isHi ? "काम स्वीकार किया गया!" : "Job Accepted!",
+      isHi ? "लाइव नेविगेशन शुरू हो गया है। ग्राहक स्थान की ओर बढ़ें।" : "Live GPS turn-by-turn navigation started. Proceed to customer location.",
+      "success"
+    );
+  };
+
   const w = currentWorker;
+
+  // ── NEW WORKER: Show Pending Verification Screen ─────────
+  if (currentUser && currentUser.role === 'worker' && currentUser.status === 'pending') {
+    return (
+      <div className="container" style={{ paddingTop: 'var(--sp-lg)', minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ maxWidth: 560, width: '100%', textAlign: 'center' }}>
+          {/* Animated status card */}
+          <div style={{ background: 'linear-gradient(135deg, #07192C 0%, #103568 100%)', border: '2px solid var(--saffron)', borderRadius: 28, padding: '40px 36px', boxShadow: '0 24px 60px rgba(0,0,0,0.5)' }}>
+            {/* Spinner animation */}
+            <div style={{ width: 80, height: 80, borderRadius: '50%', border: '4px solid rgba(244,140,6,0.2)', borderTop: '4px solid var(--saffron)', margin: '0 auto 24px', animation: 'spin 1.5s linear infinite' }} />
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+
+            <span className="badge badge-saffron" style={{ fontSize: 12, marginBottom: 16, display: 'inline-block' }}>
+              ⏳ {isHi ? 'सत्यापन प्रतीक्षा में' : 'VERIFICATION PENDING'}
+            </span>
+
+            <h2 style={{ fontSize: 24, fontWeight: 800, color: 'white', margin: '12px 0 8px' }}>
+              {isHi ? `स्वागत है, ${currentUser.name}!` : `Welcome, ${currentUser.name}!`}
+            </h2>
+            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', marginBottom: 28, lineHeight: 1.6 }}>
+              {isHi
+                ? 'आपका आवेदन प्राप्त हो गया है। महासंघ निदेशक और NCCT क्षेत्रीय अधिकारी आपके दस्तावेज़ों की जांच कर रहे हैं।'
+                : 'Your application has been received. The Federation Director & NCCT Regional Officer are reviewing your documents.'}
+            </p>
+
+            {/* Progress Steps */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, textAlign: 'left', marginBottom: 28 }}>
+              {[
+                { done: true,  step: '1', label: isHi ? 'आवेदन दर्ज हुआ' : 'Application Submitted', sub: isHi ? 'आज, ' + new Date().toLocaleDateString('en-IN') : 'Today, ' + new Date().toLocaleDateString('en-IN') },
+                { done: false, step: '2', label: isHi ? 'महासंघ निदेशक समीक्षा' : 'Federation Director Review', sub: isHi ? 'कार्यरत...' : 'In progress...' },
+                { done: false, step: '3', label: isHi ? 'NCCT प्रतिहस्ताक्षर' : 'NCCT Counter-Signature', sub: isHi ? 'प्रतीक्षारत' : 'Awaiting' },
+                { done: false, step: '4', label: isHi ? 'NCCT डिजिटल बैज जारी' : 'NCCT Digital Badge Issued', sub: isHi ? 'अनुमोदन के बाद सक्रिय' : 'Active after dual approval' },
+              ].map((s, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: s.done ? '#10b981' : 'rgba(255,255,255,0.1)', color: s.done ? 'white' : 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 13, flexShrink: 0 }}>
+                    {s.done ? '✓' : s.step}
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: s.done ? '#10b981' : 'rgba(255,255,255,0.85)' }}>{s.label}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{s.sub}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ background: 'rgba(244,140,6,0.1)', border: '1px solid rgba(244,140,6,0.3)', borderRadius: 12, padding: '12px 16px', fontSize: 13, color: '#FFB74D', marginBottom: 20 }}>
+              📱 {isHi ? 'अनुमोदन होने पर आपको SMS सूचना मिलेगी।' : 'You will receive an SMS notification once approved.'}
+            </div>
+
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button onClick={() => setRole('admin')} className="btn btn-outline" style={{ fontSize: 13, padding: '8px 18px', borderColor: 'var(--saffron)', color: 'var(--saffron)' }}>
+                🏛️ {isHi ? 'Admin पोर्टल देखें' : 'View Admin Portal'}
+              </button>
+              <button onClick={() => setRole('customer')} className="btn btn-outline" style={{ fontSize: 13, padding: '8px 18px' }}>
+                🏠 {isHi ? 'होम पर जाएं' : 'Go to Home'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container" style={{ paddingTop: 'var(--sp-lg)' }}>
+      {/* ── Active Job Navigation Map ──────────────────────── */}
+      {activeJobNav && (
+        <div style={{ marginBottom: 'var(--sp-lg)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+            <h2 style={{ fontFamily: 'var(--font-head)', fontSize: 18, fontWeight: 800, color: 'var(--saffron-dark)' }}>
+              🧭 {isHi ? 'सक्रिय कार्य नेविगेशन कंसोल' : 'Active Job GPS Navigation Console'}
+            </h2>
+            <button
+              className="btn btn-ghost"
+              style={{ fontSize: 12, color: 'var(--sos)' }}
+              onClick={() => setActiveJobNav(false)}
+            >
+              {isHi ? 'नेविगेशन बंद करें' : 'Close Navigation'}
+            </button>
+          </div>
+          <NavigationMap
+            jobDetails={{
+              address: isHi ? INCOMING_JOB.address_hi : INCOMING_JOB.address,
+              customerName: INCOMING_JOB.customer,
+              serviceName: isHi ? INCOMING_JOB.service_hi : INCOMING_JOB.service
+            }}
+            onArrival={() => {
+              showToast(isHi ? "कार्य शुरू!" : "Work Started!", isHi ? "ग्राहकतल पर कार्य प्रगति पर है।" : "Service job in progress under cooperative checklist.", "info");
+            }}
+          />
+        </div>
+      )}
+
+      {/* ── Worker Header Card ────────────────────────────── */}
       {/* ── Worker Header Card ────────────────────────────── */}
       <div className="id-card" style={{ marginBottom: 'var(--sp-lg)' }}>
         <div style={{ display: 'flex', gap: 'var(--sp-md)', alignItems: 'flex-start', flexWrap: 'wrap' }}>
@@ -124,7 +228,7 @@ export const WorkerDashboard = () => {
             <span><Clock size={12} style={{ display: 'inline' }} /> {isHi ? `ETA: ${INCOMING_JOB.eta}` : `ETA: ${INCOMING_JOB.eta}`}</span>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
-            <button className="btn btn-green" style={{ flex: 1 }} onClick={() => { setShowIncoming(false); showToast("Job Accepted!", "Navigating to customer location.", "success"); }}>
+            <button className="btn btn-green" style={{ flex: 1 }} onClick={handleAcceptJob}>
               <CheckCircle2 size={16} /> {isHi ? 'स्वीकार करें' : 'Accept Job'}
             </button>
             <button className="btn btn-ghost" onClick={() => setShowIncoming(false)}>

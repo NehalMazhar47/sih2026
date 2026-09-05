@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { usePlatform } from '../../context/PlatformContext';
 import { GeoTrackerMap } from './GeoTrackerMap';
+import { NavigationMap } from '../common/NavigationMap';
 import {
   ShieldCheck,
   Clock,
@@ -233,13 +234,16 @@ export const ActiveBooking = () => {
         </div>
       </div>
 
-      {/* Embedded Map & Worker Telemetry */}
+      {/* Embedded Navigation Map & Worker Telemetry */}
       {activeBooking.status !== 'completed' && (
         <div style={{ marginBottom: '20px' }}>
-          <GeoTrackerMap
-            workerName={activeBooking.workerName}
-            etaMinutes={activeBooking.status === 'assigned' ? 15 : (activeBooking.status === 'en_route' ? 8 : 0)}
-            status={activeBooking.status}
+          <NavigationMap
+            isCustomerView={true}
+            jobDetails={{
+              address: activeBooking.address,
+              customerName: 'You',
+              serviceName: activeBooking.serviceName
+            }}
           />
         </div>
       )}

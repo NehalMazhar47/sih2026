@@ -35,8 +35,38 @@ export const PlatformProvider = ({ children }) => {
     return () => window.removeEventListener('set-platform-language', handleLangEvent);
   }, []);
 
-  const [isMobileView, setIsMobileView] = useState(false);
+  // User Session & Navigation State
+  const [currentUser, setCurrentUser] = useState({
+    isLoggedIn: true,
+    role: 'customer',
+    name: 'Rajesh Sharma',
+    phone: '+91 98765 43210',
+    society: 'Navjeevan Cooperative Housing',
+    address: 'Flat 402, Block C, Connaught Place, Delhi',
+    pincode: '110001',
+    isSeniorCitizen: false,
+    memberId: 'SHRAM-CUST-8812'
+  });
+  const [workerTab, setWorkerTab] = useState('earnings');
+  const [isCustomerProfileOpen, setIsCustomerProfileOpen] = useState(false);
+
+  // UI State (restored)
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   const [toastMessage, setToastMessage] = useState(null);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobileView(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const registerUserSession = (userObj) => {
+    setCurrentUser({
+      isLoggedIn: true,
+      memberId: `SHRAM-${userObj.role.toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`,
+      ...userObj
+    });
+  };
 
   // Entities Data
   const [workers, setWorkers] = useState(VERIFIED_WORKERS);
@@ -119,6 +149,16 @@ export const PlatformProvider = ({ children }) => {
     }, 4500);
   };
 
+  const logoutUser = () => {
+    setCurrentUser(null);
+    setIsCustomerProfileOpen(false);
+    showToast(
+      language === 'hi' ? "लॉग आउट हुआ" : "Logged Out",
+      language === 'hi' ? "आप सुरक्षित रूप से लॉग आउट हो गए हैं।" : "You have been logged out safely.",
+      "info"
+    );
+  };
+
   // Helper translation getter
   const t = (key) => {
     const langDict = translations[language] || translations.en;
@@ -181,36 +221,66 @@ export const PlatformProvider = ({ children }) => {
     const workerToApprove = pendingWorkers.find(p => p.id === pendingId);
     if (!workerToApprove) return;
 
+    const ncctCertId = `NCCT-${workerToApprove.trade.toUpperCase().slice(0, 3)}-2026-${Math.floor(1000 + Math.random() * 9000)}`;
     const newVerifiedWorker = {
       id: `wkr-${Date.now()}`,
       name: workerToApprove.name,
       trade: workerToApprove.trade,
       societyId: "soc-1",
       societyName: workerToApprove.societyName,
-      ncctCertId: `NCCT-${workerToApprove.trade.toUpperCase().slice(0, 3)}-2026-${Math.floor(1000 + Math.random() * 9000)}`,
-      ncctLevel: "Level 4 (NCCT Certified Master)",
-      experienceYears: 6,
+      ncctCertId,
+      ncctLevel: workerToApprove.ncctLevel || "Level 4 (NCCT Certified Master)",
+      experienceYears: workerToApprove.experienceYears || 6,
       rating: 5.0,
       ratingCount: 1,
       gigsCompleted: 0,
       isAvailable: true,
       isEmergencyResponder: true,
-      phone: "+91 98765 43210",
+      phone: workerToApprove.phone || "+91 98765 43210",
       aadhaarVerified: true,
       policeVerified: true,
       toolsCertified: true,
       coordinates: [28.6140, 77.2100],
-      hourlyRate: 350,
+      hourlyRate: workerToApprove.hourlyRate || 350,
       avatarUrl: workerToApprove.avatarUrl,
       welfareBalance: 5000,
       badges: ["NCCT New Master", "Police Cleared", "Coop Member"],
-      recentReview: "Freshly inducted into cooperative federation with distinction."
+      recentReview: "Freshly inducted into cooperative federation with distinction.",
+      approvedDate: new Date().toISOString().split('T')[0],
+      approvedBy: { federation: workerToApprove.federationSign || 'Federation Admin', ncct: workerToApprove.ncctSign || 'NCCT Admin' }
     };
 
-    setWorkers([newVerifiedWorker, ...workers]);
-    setPendingWorkers(pendingWorkers.filter(p => p.id !== pendingId));
-    confetti({ particleCount: 50, spread: 60 });
-    showToast("Worker Verified!", `${workerToApprove.name} has been certified and issued NCCT Badge.`, "success");
+    setWorkers(prev => [newVerifiedWorker, ...prev]);
+    setPendingWorkers(prev => prev.filter(p => p.id !== pendingId));
+    confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+    showToast("✅ Worker Verified & Inducted!", `${workerToApprove.name} has been dual-approved and issued NCCT Badge ${ncctCertId}.`, "success");
+    speakText(`Congratulations. ${workerToApprove.name} has been verified and inducted into the cooperative federation.`);
+  };
+
+  const rejectWorkerVerification = (pendingId, reason = 'Application does not meet minimum standards.') => {
+    const worker = pendingWorkers.find(p => p.id === pendingId);
+    if (!worker) return;
+    setPendingWorkers(prev => prev.map(p =>
+      p.id === pendingId ? { ...p, status: 'rejected', rejectionReason: reason, rejectedDate: new Date().toISOString().split('T')[0] } : p
+    ));
+    showToast("Application Rejected", `${worker.name}'s application has been returned with remarks.`, "warning");
+  };
+
+  const signVerification = (pendingId, signerRole) => {
+    setPendingWorkers(prev => prev.map(p => {
+      if (p.id !== pendingId) return p;
+      const updated = { ...p };
+      if (signerRole === 'federation') updated.federationSign = `Federation Director — ${new Date().toLocaleDateString('en-IN')}`;
+      if (signerRole === 'ncct') updated.ncctSign = `NCCT Regional Officer — ${new Date().toLocaleDateString('en-IN')}`;
+      return updated;
+    }));
+    showToast(
+      signerRole === 'federation' ? '🏛️ Federation Signature Added' : '🎓 NCCT Signature Added',
+      signerRole === 'federation'
+        ? 'Awaiting NCCT Regional Officer counter-signature to complete verification.'
+        : 'Both signatures received. You may now issue NCCT Badge.',
+      'info'
+    );
   };
 
   // Action: Request Distress Loan
@@ -245,6 +315,14 @@ export const PlatformProvider = ({ children }) => {
         setRole,
         language,
         setLanguage,
+        currentUser,
+        setCurrentUser,
+        logoutUser,
+        registerUserSession,
+        workerTab,
+        setWorkerTab,
+        isCustomerProfileOpen,
+        setIsCustomerProfileOpen,
         isMobileView,
         setIsMobileView,
         t,
@@ -265,6 +343,8 @@ export const PlatformProvider = ({ children }) => {
         createBooking,
         advanceBookingStatus,
         approveWorkerVerification,
+        rejectWorkerVerification,
+        signVerification,
         applyDistressLoan,
         activeAiScenario,
         setActiveAiScenario,

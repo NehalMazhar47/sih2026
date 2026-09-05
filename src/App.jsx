@@ -9,21 +9,36 @@ import { FederationDashboard } from './components/admin/FederationDashboard';
 import { OfflineModeIndicator } from './components/common/OfflineModeIndicator';
 import { HackathonPitchModal } from './components/common/HackathonPitchModal';
 import { VoiceBookingAssistant } from './components/common/VoiceBookingAssistant';
+import { AuthModal } from './components/auth/AuthModal';
+import { CustomerProfileModal } from './components/customer/CustomerProfileModal';
 import { ShieldCheck } from 'lucide-react';
 
 const AppContent = () => {
-  const { role, isMobileView, t } = usePlatform();
+  const { role, isMobileView, t, isCustomerProfileOpen, setIsCustomerProfileOpen } = usePlatform();
   const [isPitchOpen, setIsPitchOpen] = useState(false);
   const [isVoiceOpen, setIsVoiceOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authModalRole, setAuthModalRole] = useState('customer');
 
   useEffect(() => {
     const handleOpenPitch = () => setIsPitchOpen(true);
     const handleOpenVoice = () => setIsVoiceOpen(true);
+    const handleOpenAuth = (e) => {
+      if (e.detail?.role) setAuthModalRole(e.detail.role);
+      setIsAuthOpen(true);
+    };
+    const handleOpenCustomerProfile = () => setIsCustomerProfileOpen(true);
+
     window.addEventListener('open-sih-pitch', handleOpenPitch);
     window.addEventListener('open-voice-assistant', handleOpenVoice);
+    window.addEventListener('open-auth-modal', handleOpenAuth);
+    window.addEventListener('open-customer-profile', handleOpenCustomerProfile);
+
     return () => {
       window.removeEventListener('open-sih-pitch', handleOpenPitch);
       window.removeEventListener('open-voice-assistant', handleOpenVoice);
+      window.removeEventListener('open-auth-modal', handleOpenAuth);
+      window.removeEventListener('open-customer-profile', handleOpenCustomerProfile);
     };
   }, []);
 
@@ -84,6 +99,19 @@ const AppContent = () => {
           setIsVoiceOpen(false);
           // Customer portal will handle via its own state
         }}
+      />
+
+      {/* Customer & Worker Registration Modal */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        initialRole={authModalRole}
+      />
+
+      {/* Customer Profile View Modal */}
+      <CustomerProfileModal
+        isOpen={isCustomerProfileOpen}
+        onClose={() => setIsCustomerProfileOpen(false)}
       />
 
       <Toast />

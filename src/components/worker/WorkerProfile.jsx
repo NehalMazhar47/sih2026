@@ -1,9 +1,9 @@
 import React from 'react';
 import { usePlatform } from '../../context/PlatformContext';
-import { ShieldCheck, Award, QrCode, CheckCircle, Wrench, FileCheck, Phone, MapPin, Building } from 'lucide-react';
+import { ShieldCheck, Award, QrCode, CheckCircle, Wrench, FileCheck, Phone, MapPin, Building, LogOut } from 'lucide-react';
 
 export const WorkerProfile = () => {
-  const { currentWorker, language } = usePlatform();
+  const { currentWorker, language, logoutUser } = usePlatform();
   const isHi = language === 'hi';
 
   const verifiedTools = isHi ? [
@@ -203,6 +203,25 @@ export const WorkerProfile = () => {
               </span>
             </div>
           ))}
+        </div>
+
+        {/* Log Out Control Bar */}
+        <div style={{ marginTop: '24px', paddingTop: '18px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--text)' }}>
+              {isHi ? "श्रमिक खाता सत्र" : "Shramik Account Session"}
+            </div>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+              {isHi ? "सुरक्षित रूप से बाहर निकलने हेतु लॉग आउट करें" : "Logged in as Satish Kumar Verma (NCCT Level 4)"}
+            </div>
+          </div>
+          <button
+            onClick={logoutUser}
+            className="btn btn-outline"
+            style={{ borderColor: 'var(--sos)', color: 'var(--sos)', fontWeight: 700, padding: '10px 18px' }}
+          >
+            <LogOut size={16} /> {isHi ? "लॉग आउट करें (Log Out)" : "Log Out Shramik Account"}
+          </button>
         </div>
       </div>
     </div>
